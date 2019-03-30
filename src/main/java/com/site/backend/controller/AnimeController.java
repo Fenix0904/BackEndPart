@@ -5,7 +5,8 @@ import com.site.backend.service.AnimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/anime")
+@RestController
+@RequestMapping("/anime")
 public class AnimeController {
 
     private final AnimeService animeService;
