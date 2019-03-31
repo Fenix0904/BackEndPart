@@ -1,8 +1,7 @@
 package com.site.backend.repository;
 
 import com.site.backend.domain.Anime;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AnimeRepository extends CrudRepository<Anime, Long> {
-
+public interface AnimeRepository extends JpaRepository<Anime, Long>, AnimeEagerFetchingRepository<Anime> {
 }

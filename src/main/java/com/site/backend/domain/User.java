@@ -1,11 +1,16 @@
 package com.site.backend.domain;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class User {
 
@@ -19,6 +24,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "staff")
     private List<Anime> animes;
 }

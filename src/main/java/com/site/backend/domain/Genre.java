@@ -1,11 +1,16 @@
 package com.site.backend.domain;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class Genre {
 
@@ -15,6 +20,7 @@ public class Genre {
 
     private String genre;
 
+    @JsonBackReference
     @ManyToMany(mappedBy = "genres")
     private Set<Anime> animes;
 }
