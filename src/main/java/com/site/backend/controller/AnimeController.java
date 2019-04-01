@@ -27,17 +27,17 @@ public class AnimeController {
     }
 
     @PostMapping("/create")
-    public void addNewAnime(@RequestBody Anime newAnime) {
-        animeService.createNewAnime(newAnime);
+    public void addNewAnime(@RequestBody Anime anime) {
+        animeService.createNewAnime(anime);
     }
 
     @PutMapping("/update")
-    public void updateAnime(@RequestBody Anime updatedAnime) {
-        animeService.updateAnime(updatedAnime);
+    public void updateAnime(@RequestBody Anime anime) {
+        animeService.updateAnime(anime);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteAnimById(@PathVariable Long id) {
+    public void deleteAnimeById(@PathVariable Long id) {
         animeService.deleteAnimeById(id);
     }
 }

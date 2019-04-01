@@ -8,10 +8,10 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
 public class Genre {
 
     @Id
@@ -20,7 +20,7 @@ public class Genre {
 
     private String genre;
 
-    @JsonBackReference
+    @JsonBackReference("genres")
     @ManyToMany(mappedBy = "genres")
     private Set<Anime> animes;
 }

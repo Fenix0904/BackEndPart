@@ -5,7 +5,6 @@ import com.site.backend.domain.Genre;
 import com.site.backend.domain.Role;
 import com.site.backend.domain.User;
 import com.site.backend.repository.AnimeRepository;
-import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -61,12 +60,12 @@ public class EntityCreator implements ApplicationListener<ContextRefreshedEvent>
         user.setPassword("password");
         user.setRole(Role.USER);
 
-        List<Genre> konosubaGenres = new ArrayList<>();
+        Set<Genre> konosubaGenres = new HashSet<>();
         konosubaGenres.add(comedy);
         konosubaGenres.add(isekai);
         konosubaGenres.add(magic);
 
-        List<Genre> saoGenres = new ArrayList<>();
+        Set<Genre> saoGenres = new HashSet<>();
         saoGenres.add(fantasy);
         saoGenres.add(action);
         saoGenres.add(romance);

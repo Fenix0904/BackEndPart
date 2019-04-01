@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
 public class User {
 
     @Id
@@ -24,7 +24,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @JsonBackReference
+    @JsonBackReference("staff")
     @ManyToMany(mappedBy = "staff")
-    private List<Anime> animes;
+    private Set<Anime> animes;
 }
