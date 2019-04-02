@@ -22,12 +22,12 @@ public class AnimeServiceImpl implements AnimeService {
 
     @Override
     public Iterable<Anime> getAll() {
-        return animeRepository.getAllAnimes();
+        return animeRepository.getAllEagerly();
     }
 
     @Override
     public Anime getAnimeById(Long id) {
-        return animeRepository.getAnime(id);
+        return animeRepository.getByIdEagerly(id);
     }
 
     @Override

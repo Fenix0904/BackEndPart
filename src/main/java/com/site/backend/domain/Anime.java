@@ -1,7 +1,5 @@
 package com.site.backend.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +26,7 @@ public class Anime {
 
     private String type;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "anime_genre",
                joinColumns = @JoinColumn(name = "anime_id"),
                inverseJoinColumns = @JoinColumn(name = "genre_id"))
