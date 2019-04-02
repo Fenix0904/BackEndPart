@@ -3,6 +3,7 @@ package com.site.backend.controller;
 import com.site.backend.domain.User;
 import com.site.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     @GetMapping("/")
@@ -26,9 +29,10 @@ public class UserController {
         return userService.getUserById(id);
     }
 
-    @PostMapping("/create")
-    public void addNewUser(@RequestBody User newUser) {
-        userService.createUser(newUser);
+    @PostMapping("/sign-up")
+    public void registerUser(@RequestBody User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userService.createUser(user);
     }
 
     @PutMapping("/update")

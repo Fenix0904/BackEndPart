@@ -9,6 +9,7 @@ import com.site.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -18,11 +19,13 @@ public class EntityCreator implements ApplicationListener<ContextRefreshedEvent>
 
     private final AnimeRepository animeRepository;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public EntityCreator(AnimeRepository animeRepository, UserRepository userRepository) {
+    public EntityCreator(AnimeRepository animeRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
         this.animeRepository = animeRepository;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -51,13 +54,13 @@ public class EntityCreator implements ApplicationListener<ContextRefreshedEvent>
         isekai.setGenre("Isekai");
 
         User admin = new User();
-        admin.setUsername("Admin");
-        admin.setPassword("password");
+        admin.setUsername("admin");
+        admin.setPassword(passwordEncoder.encode("password"));
         admin.setRole(Role.ADMIN);
 
         User user = new User();
-        user.setUsername("User");
-        user.setPassword("password");
+        user.setUsername("user");
+        user.setPassword(passwordEncoder.encode("password"));
         user.setRole(Role.USER);
 
         Set<Genre> konosubaGenres = new HashSet<>();
