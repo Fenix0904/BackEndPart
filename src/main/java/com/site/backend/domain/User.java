@@ -1,9 +1,12 @@
 package com.site.backend.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -19,6 +22,7 @@ public class User {
     private Long id;
 
     private String username;
+
     private String password;
 
     @Enumerated(value = EnumType.STRING)

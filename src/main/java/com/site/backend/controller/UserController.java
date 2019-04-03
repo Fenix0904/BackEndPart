@@ -2,21 +2,28 @@ package com.site.backend.controller;
 
 import com.site.backend.domain.User;
 import com.site.backend.service.UserService;
+import com.site.backend.validator.UserRegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRegistrationValidator validator;
 
     @Autowired
-    public UserController(UserService userService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public UserController(UserService userService, UserRegistrationValidator validator) {
         this.userService = userService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.validator = validator;
     }
 
     @GetMapping("/")
@@ -30,9 +37,17 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public void registerUser(@RequestBody User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+    public ResponseEntity registerUser(@RequestBody User user, BindingResult bindingResult) {
+        validator.validate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            List<String> errors = new ArrayList<>();
+            for (ObjectError error : bindingResult.getAllErrors()) {
+                errors.add(error.getCode()); // TODO create Error entity
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
+        }
         userService.createUser(user);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/update")

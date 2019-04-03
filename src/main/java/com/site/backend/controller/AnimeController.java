@@ -3,6 +3,8 @@ package com.site.backend.controller;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,8 +24,12 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public Anime getAnimeById(@PathVariable Long id) {
-        return animeService.getAnimeById(id);
+    public ResponseEntity getAnimeById(@PathVariable Long id) {
+        Anime anime = animeService.getAnimeById(id);
+        if (anime == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Something went wrong!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(anime);
     }
 
     @PostMapping("/create")
