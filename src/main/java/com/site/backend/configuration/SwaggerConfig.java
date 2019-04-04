@@ -1,26 +1,22 @@
 package com.site.backend.configuration;
 
 import com.google.common.collect.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.*;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.ApiKey;
+import springfox.documentation.service.AuthorizationScope;
+import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 @EnableSwagger2
@@ -43,7 +39,7 @@ public class SwaggerConfig {
                 .useDefaultResponseMessages(false);
 
         docket = docket.select()
-                .apis(RequestHandlerSelectors.basePackage("com.site.backend.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.site.backend"))
                 .build();
         return docket;
     }

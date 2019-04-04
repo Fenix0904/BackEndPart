@@ -1,4 +1,4 @@
-package com.site.backend.controller;
+package com.site.backend.controller.fake;
 
 import com.site.backend.domain.User;
 import io.swagger.annotations.ApiOperation;
