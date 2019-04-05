@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -32,7 +34,7 @@ public class AnimeControllerTest {
     }
 
     @Test
-    public void whenGetAllAnimesThenExpectStatusOK() throws Exception {
+    public void whenGetAllAnimesThenExpectStatusOKAndListOfAnimes() throws Exception {
         anime = new Anime();
         ArrayList<Anime> animes = new ArrayList<>();
         animes.add(anime);
@@ -44,5 +46,17 @@ public class AnimeControllerTest {
         mockMvc.perform(get("/animes/"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writer().writeValueAsString(animes)));
+    }
+
+    @Test
+    public void whenGetAnimeByIdThenExpectStatusOkAndAnime() throws Exception {
+        anime = new Anime();
+
+        when(animeService.getAnimeById(anyLong())).thenReturn(anime);
+
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+        mockMvc.perform(get("/animes/" + anyInt()))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writer().writeValueAsString(anime)));
     }
 }

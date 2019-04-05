@@ -19,7 +19,7 @@ public class AnimeServiceTest {
     private AnimeRepository animeRepository;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         animeService = new AnimeServiceImpl(animeRepository);
     }
@@ -33,5 +33,6 @@ public class AnimeServiceTest {
 
         assertNotEquals(returnedValue, null);
         verify(animeRepository, times(1)).getByIdEagerly(anyLong());
+        verify(animeRepository, never()).findAll();
     }
 }
