@@ -1,9 +1,6 @@
 package com.site.backend.bootstarter;
 
-import com.site.backend.domain.Anime;
-import com.site.backend.domain.Genre;
-import com.site.backend.domain.Role;
-import com.site.backend.domain.User;
+import com.site.backend.domain.*;
 import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,16 +74,18 @@ public class EntityCreator implements ApplicationListener<ContextRefreshedEvent>
 
         Anime swordArtOnline = new Anime();
         swordArtOnline.setTitle("Sword Art Online");
-        swordArtOnline.setYear(Calendar.getInstance().getTime());
+        swordArtOnline.setSeason(new Season());
         swordArtOnline.setDescription("Some very loooooooooooong text with anime description. Yeah, it can be quite long.");
-        swordArtOnline.setType("24 ep");
+        swordArtOnline.setType(AnimeType.TV);
+        swordArtOnline.setEpisodesCount(24);
         swordArtOnline.setGenres(konosubaGenres);
 
         Anime konosuba =  new Anime();
         konosuba.setTitle("Konosuba");
-        konosuba.setYear(Calendar.getInstance().getTime());
+        konosuba.setSeason(new Season());
         konosuba.setDescription("Some very loooooooooooong text with anime description. Yeah, it can be quite long.");
-        konosuba.setType("12 ep");
+        konosuba.setType(AnimeType.ONA);
+        konosuba.setEpisodesCount(12);
         konosuba.setGenres(saoGenres);
 
         userRepository.save(admin);

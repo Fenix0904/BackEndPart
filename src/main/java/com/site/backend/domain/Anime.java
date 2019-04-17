@@ -22,9 +22,13 @@ public class Anime {
     @Lob
     private String description;
 
-    private Date year;
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Season season;
 
-    private String type;
+    @Enumerated
+    private AnimeType type;
+
+    private int episodesCount;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "anime_genre",
@@ -39,5 +43,5 @@ public class Anime {
     private Set<User> staff;
 
     @Lob
-    private Byte[] image;
+    private Byte[] poster;
 }

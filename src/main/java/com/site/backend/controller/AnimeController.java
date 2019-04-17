@@ -35,8 +35,9 @@ public class AnimeController {
     }
 
     @PostMapping("/create")
-    public void addNewAnime(@RequestBody Anime anime) {
+    public ResponseEntity addNewAnime(@RequestBody Anime anime) {
         animeService.createNewAnime(anime);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/update")
