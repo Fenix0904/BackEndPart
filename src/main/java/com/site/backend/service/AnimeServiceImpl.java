@@ -16,8 +16,8 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public void createNewAnime(Anime newAnime) {
-        animeRepository.save(newAnime);
+    public Anime createNewAnime(Anime newAnime) {
+        return animeRepository.save(newAnime);
     }
 
     @Override

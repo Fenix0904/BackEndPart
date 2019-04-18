@@ -1,10 +1,16 @@
 package com.site.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Set;
 
@@ -28,7 +34,7 @@ public class Anime {
     @Enumerated
     private AnimeType type;
 
-    private int episodesCount;
+    private Integer episodesCount;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "anime_genre",
@@ -43,5 +49,5 @@ public class Anime {
     private Set<User> staff;
 
     @Lob
-    private Byte[] poster;
+    private byte[] poster;
 }

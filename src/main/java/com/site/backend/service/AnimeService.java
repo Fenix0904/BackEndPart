@@ -4,7 +4,7 @@ import com.site.backend.domain.Anime;
 
 public interface AnimeService {
 
-    void createNewAnime(Anime newAnime);
+    Anime createNewAnime(Anime newAnime);
 
     Iterable<Anime> getAll();
 
