@@ -48,6 +48,5 @@ public class Anime {
                inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> staff;
 
-    @Lob
-    private byte[] poster;
+    private String posterUrl;
 }

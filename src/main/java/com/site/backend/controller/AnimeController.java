@@ -1,15 +1,17 @@
 package com.site.backend.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
+import com.site.backend.service.ImageService;
 import com.site.backend.utils.ResponseError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -17,10 +19,12 @@ import java.io.IOException;
 public class AnimeController {
 
     private final AnimeService animeService;
+    private final ImageService imageService;
 
     @Autowired
-    public AnimeController(AnimeService animeService) {
+    public AnimeController(AnimeService animeService, ImageService imageService) {
         this.animeService = animeService;
+        this.imageService = imageService;
     }
 
     @GetMapping("/")
@@ -39,23 +43,16 @@ public class AnimeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(@RequestBody Anime anime) {
-        Anime created = animeService.createNewAnime(anime);
-        return ResponseEntity.status(HttpStatus.OK).body(created);
-    }
-
-    // TODO  too many db queries. Maybe it will be better to implement in-memory 'cache' for created anime, than add poster and than save!
-
-    @PostMapping(value = "/uploadPoster")
-    public ResponseEntity addPosterToAnime(@RequestParam("animeId") Long animeId, @RequestParam("poster") MultipartFile poster) {
-        Anime animeById = animeService.getAnimeById(animeId);
+    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam("poster") MultipartFile poster, HttpServletRequest servletRequest) {
         try {
-            animeById.setPoster(poster.getBytes());
+            Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
+            imageService.saveImageFile(anime, poster, servletRequest);
+            Anime created = animeService.createNewAnime(anime);
+            return ResponseEntity.status(HttpStatus.OK).body(created);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        animeService.updateAnime(animeById);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.OK).body("");
     }
 
     @PutMapping(value = "/update")

@@ -30,7 +30,7 @@ public class AnimeControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        controller = new AnimeController(animeService);
+//        controller = new AnimeController(animeService, imageService);
     }
 
     @Test
