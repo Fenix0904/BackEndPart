@@ -1,9 +1,7 @@
 package com.site.backend.repository;
 
 import com.site.backend.domain.AnimeSeason;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public interface SeasonRepository extends CrudRepository<AnimeSeason, Long> {
+public interface SeasonRepository extends JpaRepository<AnimeSeason, Long> {
 }

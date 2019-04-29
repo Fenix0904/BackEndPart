@@ -1,5 +1,5 @@
 package com.site.backend.domain;
 
 public enum AnimeType {
-    OVA, ONA, TV, MOVIE, NONE
+    TV, OVA, ONA, MOVIE, NONE
 }

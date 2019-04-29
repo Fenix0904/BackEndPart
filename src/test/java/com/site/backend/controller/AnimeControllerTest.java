@@ -3,6 +3,7 @@ package com.site.backend.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
+import com.site.backend.service.ImageService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,6 +24,8 @@ public class AnimeControllerTest {
     @Mock
     private AnimeService animeService;
     @Mock
+    private ImageService imageService;
+    @Mock
     private Anime anime;
 
     private AnimeController controller;
@@ -30,7 +33,7 @@ public class AnimeControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-//        controller = new AnimeController(animeService, imageService);
+        controller = new AnimeController(animeService, imageService);
     }
 
     @Test

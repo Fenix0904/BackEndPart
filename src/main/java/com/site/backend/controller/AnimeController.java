@@ -44,10 +44,12 @@ public class AnimeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam("poster") MultipartFile poster) {
+    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam(value = "poster", required = false) MultipartFile poster) {
         try {
             Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
-            imageService.addPosterToAnime(anime, poster);
+            if (poster != null) {
+                imageService.addPosterToAnime(anime, poster);
+            }
             Anime created = animeService.createNewAnime(anime);
             return ResponseEntity.status(HttpStatus.OK).body(created);
         } catch (IOException e) {

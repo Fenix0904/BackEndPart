@@ -26,7 +26,7 @@ public class AnimeSeasonController {
 
     @GetMapping("/seasons")
     public Set<AnimeSeason> getAllAvailableSeasons() {
-        List<AnimeSeason> all = (ArrayList<AnimeSeason>) seasonRepository.findAll();
+        List<AnimeSeason> all = seasonRepository.findAll();
         all.sort(new AnimeSeasonComparator());
         return new LinkedHashSet<>(all);
     }
