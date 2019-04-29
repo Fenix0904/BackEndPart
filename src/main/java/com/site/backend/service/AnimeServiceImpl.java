@@ -2,8 +2,11 @@ package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
 import com.site.backend.repository.AnimeRepository;
+import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AnimeServiceImpl implements AnimeService {
@@ -26,8 +29,18 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public Anime getAnimeById(Long id) {
-        return animeRepository.getByIdEagerly(id);
+    public Anime getAnimeByIdEagerly(Long id) throws AnimeNotFoundException {
+        Anime anime = animeRepository.getByIdEagerly(id);
+        if (anime == null) {
+            throw new AnimeNotFoundException();
+        }
+        return anime;
+    }
+
+    @Override
+    public Anime getAnimeById(Long id) throws AnimeNotFoundException {
+        Optional<Anime> anime = animeRepository.findById(id);
+        return anime.orElseThrow(AnimeNotFoundException::new);
     }
 
     @Override

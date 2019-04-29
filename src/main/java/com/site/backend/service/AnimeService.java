@@ -1,6 +1,7 @@
 package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
+import com.site.backend.utils.exceptions.AnimeNotFoundException;
 
 public interface AnimeService {
 
@@ -8,7 +9,9 @@ public interface AnimeService {
 
     Iterable<Anime> getAll();
 
-    Anime getAnimeById(Long id);
+    Anime getAnimeByIdEagerly(Long id) throws AnimeNotFoundException;
+
+    Anime getAnimeById(Long id) throws AnimeNotFoundException;
 
     void updateAnime(Anime newAnime);
 

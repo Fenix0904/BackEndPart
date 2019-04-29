@@ -2,6 +2,7 @@ package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
 import com.site.backend.repository.AnimeRepository;
+import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -25,14 +26,20 @@ public class AnimeServiceTest {
     }
 
     @Test
-    public void whenLoadByIdThenReturnEntity() {
+    public void whenLoadByIdThenReturnEntity() throws AnimeNotFoundException {
         Anime anime = new Anime();
 
         when(animeRepository.getByIdEagerly(anyLong())).thenReturn(anime);
-        Anime returnedValue = animeService.getAnimeById(1L);
+        Anime returnedValue = animeService.getAnimeByIdEagerly(1L);
 
         assertNotEquals(returnedValue, null);
         verify(animeRepository, times(1)).getByIdEagerly(anyLong());
         verify(animeRepository, never()).findAll();
+    }
+
+    @Test(expected = AnimeNotFoundException.class)
+    public void whenLoadByInvalidIdThenThrowException() throws Exception {
+        when(animeRepository.getByIdEagerly(anyLong())).thenReturn(null);
+        animeService.getAnimeById(-1L);
     }
 }
