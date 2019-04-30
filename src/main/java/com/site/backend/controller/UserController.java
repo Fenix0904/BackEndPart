@@ -3,6 +3,7 @@ package com.site.backend.controller;
 import com.site.backend.domain.User;
 import com.site.backend.service.UserService;
 import com.site.backend.utils.ResponseError;
+import com.site.backend.utils.exceptions.UserNotFoundException;
 import com.site.backend.validator.UserRegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getUserById(@PathVariable Long id) {
+    public ResponseEntity getUserById(@PathVariable Long id) throws UserNotFoundException {
         User user = userService.getUserById(id);
-        if (user == null) {
-            ResponseError error = new ResponseError("id", "There are no user with such id!");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-        }
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 

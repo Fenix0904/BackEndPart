@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
 import com.site.backend.service.ImageService;
-import com.site.backend.utils.ResponseError;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
+import com.site.backend.utils.exceptions.ContentNotAllowedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,18 +33,13 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getAnimeById(@PathVariable Long id) {
-        try {
-            Anime anime = animeService.getAnimeByIdEagerly(id);
-            return ResponseEntity.status(HttpStatus.OK).body(anime);
-        } catch (AnimeNotFoundException e) {
-            ResponseError error = new ResponseError("id", "There are no anime with such id!");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-        }
+    public ResponseEntity getAnimeById(@PathVariable Long id) throws AnimeNotFoundException {
+        Anime anime = animeService.getAnimeByIdEagerly(id);
+        return ResponseEntity.status(HttpStatus.OK).body(anime);
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam(value = "poster", required = false) MultipartFile poster) {
+    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam(value = "poster", required = false) MultipartFile poster) throws ContentNotAllowedException {
         try {
             Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
             if (poster != null) {
@@ -53,8 +48,7 @@ public class AnimeController {
             Anime created = animeService.createNewAnime(anime);
             return ResponseEntity.status(HttpStatus.OK).body(created);
         } catch (IOException e) {
-            ResponseError error = new ResponseError("anime", "Something is wrong with anime json...");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+            throw new ContentNotAllowedException();
         }
     }
 

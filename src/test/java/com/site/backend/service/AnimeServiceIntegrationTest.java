@@ -15,10 +15,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -38,8 +36,8 @@ public class AnimeServiceIntegrationTest {
         MockitoAnnotations.initMocks(this);
         animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository);
     }
-    @Test
 
+    @Test
     public void updateAnime() {
         AnimeSeason season = new AnimeSeason();
         season.setYear(2019);
