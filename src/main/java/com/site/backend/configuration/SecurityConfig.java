@@ -2,11 +2,13 @@ package com.site.backend.configuration;
 
 import com.site.backend.security.JWTAuthenticationFilter;
 import com.site.backend.security.JWTAuthorizationFilter;
+import com.site.backend.security.TokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,10 +23,17 @@ import static com.site.backend.security.SecurityConstants.SIGN_UP_URL;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserDetailsService userDetailsService;
+    private final TokenProvider tokenProvider;
+
     @Autowired
-    private UserDetailsService userDetailsService;
+    public SecurityConfig(UserDetailsService userDetailsService, TokenProvider tokenProvider) {
+        this.userDetailsService = userDetailsService;
+        this.tokenProvider = tokenProvider;
+    }
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -36,10 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL).permitAll()
                 .antMatchers("/", "/csrf", "/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/**", "/swagger-ui.html", "/webjars/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), tokenProvider))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userDetailsService, tokenProvider))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 

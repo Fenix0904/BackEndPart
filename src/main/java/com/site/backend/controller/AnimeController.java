@@ -33,7 +33,10 @@ public class AnimeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getAnimeById(@PathVariable Long id) throws AnimeNotFoundException {
+    public ResponseEntity getAnimeById(@PathVariable Long id) throws AnimeNotFoundException, ContentNotAllowedException {
+        if (id < 0) {
+            throw new ContentNotAllowedException();
+        }
         Anime anime = animeService.getAnimeByIdEagerly(id);
         return ResponseEntity.status(HttpStatus.OK).body(anime);
     }

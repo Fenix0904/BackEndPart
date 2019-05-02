@@ -10,7 +10,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -89,13 +89,15 @@ public class EntityCreator implements ApplicationListener<ContextRefreshedEvent>
 
         User admin = new User();
         admin.setUsername("admin");
+        admin.setActive(true);
         admin.setPassword(passwordEncoder.encode("password"));
-        admin.setRole(Role.ADMIN);
+        admin.setRoles(Collections.singleton(Role.ADMIN));
 
         User user = new User();
+        user.setActive(true);
         user.setUsername("user");
         user.setPassword(passwordEncoder.encode("password"));
-        user.setRole(Role.USER);
+        user.setRoles(Collections.singleton(Role.USER));
 
         Set<Genre> konosubaGenres = new HashSet<>();
         konosubaGenres.add(comedy);

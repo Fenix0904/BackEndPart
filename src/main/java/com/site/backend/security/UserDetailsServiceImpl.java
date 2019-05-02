@@ -1,4 +1,4 @@
-package com.site.backend.service;
+package com.site.backend.security;
 
 import com.site.backend.domain.User;
 import com.site.backend.repository.UserRepository;
@@ -28,6 +28,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), Collections.emptyList());
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getRoles());
     }
 }

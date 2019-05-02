@@ -24,8 +24,12 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    private boolean isActive;
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(value = EnumType.STRING)
-    private Role role;
+    private Set<Role> roles;
 
     @JsonBackReference("staff")
     @ManyToMany(mappedBy = "staff")

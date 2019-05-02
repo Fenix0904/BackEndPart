@@ -8,6 +8,7 @@ import com.site.backend.validator.UserRegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -35,6 +36,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity getUserById(@PathVariable Long id) throws UserNotFoundException {
         User user = userService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
