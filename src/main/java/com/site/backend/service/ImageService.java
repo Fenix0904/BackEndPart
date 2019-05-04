@@ -4,11 +4,10 @@ import com.site.backend.domain.Anime;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 public interface ImageService {
-    void addPosterToAnime(Anime anime, MultipartFile file);
+    void addPosterToAnime(Anime anime, MultipartFile file) throws IOException;
 
-    void savePoster(Long animeId, MultipartFile file) throws AnimeNotFoundException;
+    void savePoster(Long animeId, MultipartFile file) throws AnimeNotFoundException, IOException;
 }

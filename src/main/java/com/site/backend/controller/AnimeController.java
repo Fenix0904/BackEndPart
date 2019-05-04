@@ -42,7 +42,8 @@ public class AnimeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam(value = "poster", required = false) MultipartFile poster) throws ContentNotAllowedException {
+    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam(value = "poster", required = false) MultipartFile poster)
+            throws ContentNotAllowedException {
         try {
             Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
             if (poster != null) {

@@ -29,7 +29,6 @@ public class AnimeServiceImpl implements AnimeService {
     // TODO looks like this method can also perform 'update' logic.
     @Override
     public Anime createNewAnime(Anime newAnime) {
-
         Set<Genre> attachedGenres = new HashSet<>();
         if (newAnime.getGenres() != null) {
             for (Genre genre : newAnime.getGenres()) {

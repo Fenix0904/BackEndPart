@@ -41,6 +41,5 @@ public class Anime {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> staff;
 
-    @Lob
-    private Byte[] poster;
+    private String poster;
 }
