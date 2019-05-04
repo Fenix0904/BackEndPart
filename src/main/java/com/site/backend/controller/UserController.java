@@ -3,6 +3,7 @@ package com.site.backend.controller;
 import com.site.backend.domain.User;
 import com.site.backend.service.UserService;
 import com.site.backend.utils.ResponseError;
+import com.site.backend.utils.exceptions.UserAlreadyExistException;
 import com.site.backend.utils.exceptions.UserNotFoundException;
 import com.site.backend.validator.UserRegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
+    //TODO fix registration (do not return user, cause he is no active yet). Also try to implement logic of returning user after log in.
+
     @PostMapping("/sign-up")
-    public ResponseEntity registerUser(@RequestBody User user, BindingResult bindingResult) {
+    public ResponseEntity registerUser(@RequestBody User user, BindingResult bindingResult) throws UserAlreadyExistException {
         validator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             List<ResponseError> errors = new ArrayList<>();
@@ -59,6 +62,18 @@ public class UserController {
         }
         User createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.OK).body(createdUser);
+    }
+
+    // TODO return message "Now you can loh in" or smth like that.
+    @GetMapping("/activate/{code}")
+    public ResponseEntity activateUser(@PathVariable String code) {
+        boolean isActivated = userService.activateUser(code);
+
+        if (isActivated) {
+            return ResponseEntity.status(HttpStatus.OK).body("");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
     }
 
     @PutMapping("/update")
