@@ -2,6 +2,7 @@ package com.site.backend.controller;
 
 import com.site.backend.domain.User;
 import com.site.backend.service.UserService;
+import com.site.backend.utils.ErrorsCollector;
 import com.site.backend.utils.ResponseError;
 import com.site.backend.utils.exceptions.UserAlreadyExistException;
 import com.site.backend.utils.exceptions.UserNotFoundException;
@@ -9,15 +10,12 @@ import com.site.backend.validator.UserRegistrationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -46,18 +44,10 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity registerUser(@RequestBody User user, BindingResult bindingResult) throws UserAlreadyExistException {
+    public ResponseEntity registerUser(@Valid @RequestBody User user, BindingResult bindingResult) throws UserAlreadyExistException {
         validator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
-            List<ResponseError> errors = new ArrayList<>();
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                errors.add(
-                        new ResponseError(
-                                ((FieldError) error).getField(),
-                                error.getCode()
-                        )
-                );
-            }
+            List<ResponseError> errors = ErrorsCollector.collectErrors(bindingResult);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
         }
         userService.createUser(user);

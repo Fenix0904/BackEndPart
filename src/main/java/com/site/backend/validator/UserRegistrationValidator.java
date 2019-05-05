@@ -25,11 +25,26 @@ public class UserRegistrationValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         User receivedUser = (User) o;
-        if (userRepository.existsUserByUsername(receivedUser.getUsername())) {
-            errors.rejectValue("username", "User with this username is already registered!");
+        if (receivedUser.getUsername() == null) {
+            errors.rejectValue("username", "Username cannot be empty!");
+        } else {
+            if (userRepository.existsUserByUsername(receivedUser.getUsername())) {
+                errors.rejectValue("username", "User with this username is already registered!");
+            }
         }
-        if (receivedUser.getPassword().length() < 6) {
-            errors.rejectValue("password", "The password should be at least 6 symbols.");
+        if (receivedUser.getPasswordRepeat() == null) {
+            errors.rejectValue("passwordRepeat", "Password repeat cannot be empty!");
+        } else {
+            if (!receivedUser.getPassword().equals(receivedUser.getPasswordRepeat())) {
+                errors.rejectValue("passwordRepeat", "Password mismatch!");
+            }
+        }
+        if (receivedUser.getPassword() == null) {
+            errors.rejectValue("password", "Password cannot be empty!");
+        } else {
+            if (receivedUser.getPassword().length() < 6) {
+                errors.rejectValue("password", "The password should be at least 6 symbols.");
+            }
         }
     }
 }

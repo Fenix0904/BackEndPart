@@ -4,15 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
 import com.site.backend.service.ImageService;
+import com.site.backend.utils.ErrorsCollector;
+import com.site.backend.utils.ResponseError;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.ContentNotAllowedException;
+import com.site.backend.validator.AnimeCreationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/animes")
@@ -20,11 +25,13 @@ public class AnimeController {
 
     private final AnimeService animeService;
     private final ImageService imageService;
+    private final AnimeCreationValidator validator;
 
     @Autowired
-    public AnimeController(AnimeService animeService, ImageService imageService) {
+    public AnimeController(AnimeService animeService, ImageService imageService, AnimeCreationValidator validator) {
         this.animeService = animeService;
         this.imageService = imageService;
+        this.validator = validator;
     }
 
     @GetMapping("/")
@@ -42,10 +49,17 @@ public class AnimeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString, @RequestParam(value = "poster", required = false) MultipartFile poster)
+    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString,
+                                      @RequestParam(value = "poster", required = false) MultipartFile poster,
+                                      BindingResult bindingResult)
             throws ContentNotAllowedException {
         try {
             Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
+            validator.validate(anime, bindingResult);
+            if (bindingResult.hasErrors()) {
+                List<ResponseError> errors = ErrorsCollector.collectErrors(bindingResult);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+            }
             if (poster != null) {
                 imageService.addPosterToAnime(anime, poster);
             }
