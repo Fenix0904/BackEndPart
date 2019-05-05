@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
             user.setRoles(Collections.singleton(Role.USER));
         }
         user.setActivationCode(UUID.randomUUID().toString());
+        user.setActive(false);
         sendMessage(user);
         return userRepository.save(user);
     }
@@ -130,9 +131,9 @@ public class UserServiceImpl implements UserService {
     private void sendMessage(User user) {
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
-                    "Hello, %s\n" +
-                            "Welcome to AniSite. Please, visit next link for activation " +
-                            "http://localhost:8080/users/activate/%s",
+                    "Hello, %s! <br>" +
+                    "Welcome to AniSite. Please, visit next link for activation " +
+                    "http://localhost:8080/users/activate/%s",
                     user.getUsername(),
                     user.getActivationCode()
             );

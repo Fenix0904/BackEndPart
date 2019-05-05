@@ -32,6 +32,7 @@ public class User {
     @Email
     private String email;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String activationCode;
 
     private boolean isActive;
