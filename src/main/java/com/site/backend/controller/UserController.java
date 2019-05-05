@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -37,13 +39,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity getUserById(@PathVariable Long id) throws UserNotFoundException {
         User user = userService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
-
-    //TODO fix registration (do not return user, cause he is no active yet). Also try to implement logic of returning user after log in.
 
     @PostMapping("/sign-up")
     public ResponseEntity registerUser(@RequestBody User user, BindingResult bindingResult) throws UserAlreadyExistException {
@@ -60,25 +60,31 @@ public class UserController {
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
         }
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.status(HttpStatus.OK).body(createdUser);
+        userService.createUser(user);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
-    // TODO return message "Now you can loh in" or smth like that.
     @GetMapping("/activate/{code}")
     public ResponseEntity activateUser(@PathVariable String code) {
         boolean isActivated = userService.activateUser(code);
 
         if (isActivated) {
-            return ResponseEntity.status(HttpStatus.OK).body("");
+            return new ResponseEntity(HttpStatus.OK); // user was activated.
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+            return new ResponseEntity(HttpStatus.NOT_FOUND); // user was already activated and {code} is not valid anymore.
         }
     }
 
     @PutMapping("/update")
-    public void updateUser(@RequestBody User updatedUser) {
-        userService.updateUser(updatedUser); // TODO
+    public ResponseEntity updateUser(@AuthenticationPrincipal UserDetails currentUser, @RequestBody User updatedUser) {
+        User user = userService.updateUser(currentUser, updatedUser);
+        if (user == null) {
+            ResponseError error = new ResponseError();
+            error.setErrorMessage("Looks like you have no rights to update this user.");
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
     @DeleteMapping("/delete/{id}")

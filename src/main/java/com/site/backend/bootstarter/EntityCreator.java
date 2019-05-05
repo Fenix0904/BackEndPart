@@ -32,7 +32,7 @@ public class EntityCreator implements ApplicationListener<ContextRefreshedEvent>
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        fillDatabaseWithData();
+//        fillDatabaseWithData();
     }
 
     private void fillDatabaseWithData() {

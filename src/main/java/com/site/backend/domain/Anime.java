@@ -18,7 +18,6 @@ public class Anime {
 
     private String title;
 
-    @Lob
     private String description;
 
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

@@ -1,7 +1,7 @@
 create table anime
 (
     id              bigserial not null,
-    description     text,
+    description     varchar(2048),
     episodes_count  int4,
     poster          varchar(255),
     title           varchar(255),
