@@ -40,6 +40,8 @@ public class AnimeServiceImpl implements AnimeService {
         if (newAnime.getAnimeSeason().getId() != null) {
             Optional<AnimeSeason> attachedSeason = seasonRepository.findById(newAnime.getAnimeSeason().getId());
             attachedSeason.ifPresent(newAnime::setAnimeSeason);
+        } else {
+            newAnime.setAnimeSeason(null);
         }
 
         return animeRepository.save(newAnime);

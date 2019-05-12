@@ -20,7 +20,7 @@ public class Anime {
 
     private String description;
 
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToOne
     private AnimeSeason animeSeason;
 
     @Enumerated
