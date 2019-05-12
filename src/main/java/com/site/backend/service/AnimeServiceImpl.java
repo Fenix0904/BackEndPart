@@ -37,7 +37,7 @@ public class AnimeServiceImpl implements AnimeService {
             }
             newAnime.setGenres(attachedGenres);
         }
-        if (newAnime.getAnimeSeason() != null) {
+        if (newAnime.getAnimeSeason().getId() != null) {
             Optional<AnimeSeason> attachedSeason = seasonRepository.findById(newAnime.getAnimeSeason().getId());
             attachedSeason.ifPresent(newAnime::setAnimeSeason);
         }

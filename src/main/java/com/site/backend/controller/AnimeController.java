@@ -12,11 +12,11 @@ import com.site.backend.validator.AnimeCreationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -50,14 +50,13 @@ public class AnimeController {
 
     @PostMapping(value = "/create")
     public ResponseEntity addNewAnime(@RequestParam("anime") String animeString,
-                                      @RequestParam(value = "poster", required = false) MultipartFile poster,
-                                      BindingResult bindingResult)
+                                      @RequestParam(value = "poster", required = false) MultipartFile poster)
             throws ContentNotAllowedException {
         try {
             Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
-            validator.validate(anime, bindingResult);
-            if (bindingResult.hasErrors()) {
-                List<ResponseError> errors = ErrorsCollector.collectErrors(bindingResult);
+            List<ResponseError> errors = new ArrayList<>();
+            validator.validate(anime, errors);
+            if (errors.size() != 0) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
             }
             if (poster != null) {
