@@ -1,18 +1,24 @@
 package com.site.backend.validator;
 
 import com.site.backend.domain.Anime;
-import com.site.backend.utils.ResponseError;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-
-import java.util.List;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
 @Component
-public class AnimeCreationValidator {
+public class AnimeCreationValidator implements Validator {
 
-    public void validate(Anime anime, List<ResponseError> errors) {
+    @Override
+    public boolean supports(Class<?> aClass) {
+        return Anime.class.equals(aClass);
+    }
+
+    @Override
+    public void validate(Object o, Errors errors) {
+        Anime anime = (Anime) o;
         if (StringUtils.isEmpty(anime.getTitle())) {
-            errors.add(new ResponseError("title", "Title cannot be empty!"));
+            errors.rejectValue("title", "Title cannot be empty!");
         }
     }
 }

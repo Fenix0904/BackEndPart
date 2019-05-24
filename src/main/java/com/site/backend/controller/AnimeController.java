@@ -8,10 +8,12 @@ import com.site.backend.utils.ErrorsCollector;
 import com.site.backend.utils.ResponseError;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.ContentNotAllowedException;
+import com.site.backend.utils.exceptions.PosterException;
 import com.site.backend.validator.AnimeCreationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,24 +51,27 @@ public class AnimeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(@RequestParam("anime") String animeString,
+    public ResponseEntity addNewAnime(Anime anime,
+                                      BindingResult bindingResult,
                                       @RequestParam(value = "poster", required = false) MultipartFile poster)
-            throws ContentNotAllowedException {
-        try {
-            Anime anime = new ObjectMapper().readValue(animeString, Anime.class);
-            List<ResponseError> errors = new ArrayList<>();
-            validator.validate(anime, errors);
-            if (errors.size() != 0) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-            }
-            if (poster != null) {
-                imageService.addPosterToAnime(anime, poster);
-            }
-            Anime created = animeService.createNewAnime(anime);
-            return ResponseEntity.status(HttpStatus.OK).body(created);
-        } catch (IOException e) {
+            throws ContentNotAllowedException, PosterException {
+        if (anime == null) {
             throw new ContentNotAllowedException();
         }
+        validator.validate(anime, bindingResult);
+        if (bindingResult.getErrorCount() > 1) {
+            List<ResponseError> errors = ErrorsCollector.collectErrors(bindingResult);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+        if (poster != null) {
+            try {
+                imageService.addPosterToAnime(anime, poster);
+            } catch (IOException e) {
+                throw new PosterException();
+            }
+        }
+        Anime created = animeService.createNewAnime(anime);
+        return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
     @PutMapping(value = "/update")

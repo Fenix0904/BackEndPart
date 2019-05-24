@@ -1,10 +1,7 @@
 package com.site.backend.utils.exceptions.handler;
 
 import com.site.backend.utils.ResponseError;
-import com.site.backend.utils.exceptions.AnimeNotFoundException;
-import com.site.backend.utils.exceptions.ContentNotAllowedException;
-import com.site.backend.utils.exceptions.UserAlreadyExistException;
-import com.site.backend.utils.exceptions.UserNotFoundException;
+import com.site.backend.utils.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({AnimeNotFoundException.class, ContentNotAllowedException.class, UserNotFoundException.class})
+    @ExceptionHandler({AnimeNotFoundException.class, ContentNotAllowedException.class, UserNotFoundException.class, PosterException.class})
     public ResponseEntity<?> animeNotFoundException(Exception ex) {
         ResponseError error = new ResponseError();
         if (ex instanceof AnimeNotFoundException) {
@@ -30,6 +27,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             error.setField("username");
             error.setErrorMessage("User with such username is already registered!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        } else if (ex instanceof PosterException) {
+            error.setField("poster");
+            error.setErrorMessage("Something went wrong during poster saving...");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
         } else {
             error.setErrorMessage("Something went wrong...");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
