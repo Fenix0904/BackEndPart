@@ -37,7 +37,7 @@ public class AnimeServiceImpl implements AnimeService {
             }
             newAnime.setGenres(attachedGenres);
         }
-        if (newAnime.getAnimeSeason().getId() != null) {
+        if (newAnime.getAnimeSeason() != null && newAnime.getAnimeSeason().getId() != null) {
             Optional<AnimeSeason> attachedSeason = seasonRepository.findById(newAnime.getAnimeSeason().getId());
             attachedSeason.ifPresent(newAnime::setAnimeSeason);
         } else {
@@ -49,17 +49,9 @@ public class AnimeServiceImpl implements AnimeService {
 
     @Override
     public Iterable<Anime> getAll() {
-        return animeRepository.getAllEagerly();
+        return animeRepository.findAll();
     }
 
-    @Override
-    public Anime getAnimeByIdEagerly(Long id) throws AnimeNotFoundException {
-        Anime anime = animeRepository.getByIdEagerly(id);
-        if (anime == null) {
-            throw new AnimeNotFoundException();
-        }
-        return anime;
-    }
 
     @Override
     public Anime getAnimeById(Long id) throws AnimeNotFoundException {

@@ -58,7 +58,7 @@ public class AnimeControllerTest {
     public void whenGetAnimeByIdThenExpectStatusOkAndAnime() throws Exception {
         anime = new Anime();
 
-        when(animeService.getAnimeByIdEagerly(anyLong())).thenReturn(anime);
+        when(animeService.getAnimeById(anyLong())).thenReturn(anime);
 
         MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
         mockMvc.perform(get("/animes/" + anyInt()))

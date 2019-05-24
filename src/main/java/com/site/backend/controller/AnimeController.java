@@ -46,7 +46,7 @@ public class AnimeController {
         if (id < 0) {
             throw new ContentNotAllowedException();
         }
-        Anime anime = animeService.getAnimeByIdEagerly(id);
+        Anime anime = animeService.getAnimeById(id);
         return ResponseEntity.status(HttpStatus.OK).body(anime);
     }
 

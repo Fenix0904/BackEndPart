@@ -3,23 +3,33 @@ package com.site.backend.service;
 import com.site.backend.domain.Anime;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ImageServiceTest {
     @Mock
     private AnimeService animeService;
 
     private ImageService imageService;
+
+    @Value("${upload.path}")
+    private String uploadPath;
 
     @Before
     public void setUp() {
@@ -45,7 +55,8 @@ public class ImageServiceTest {
         //then
         verify(animeService, times(1)).updateAnime(argumentCaptor.capture());
         Anime saved = argumentCaptor.getValue();
-//        assertEquals(file.getBytes().length, saved.getPoster().length);
+        assertNotNull(saved.getPoster());
+        assertThat(saved.getPoster(), containsString(uploadPath));
     }
 
     @Test

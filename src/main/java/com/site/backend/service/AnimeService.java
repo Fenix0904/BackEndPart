@@ -9,8 +9,6 @@ public interface AnimeService {
 
     Iterable<Anime> getAll();
 
-    Anime getAnimeByIdEagerly(Long id) throws AnimeNotFoundException;
-
     Anime getAnimeById(Long id) throws AnimeNotFoundException;
 
     void updateAnime(Anime newAnime);

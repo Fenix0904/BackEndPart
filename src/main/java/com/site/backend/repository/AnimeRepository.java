@@ -11,9 +11,4 @@ import java.util.Set;
 
 public interface AnimeRepository extends JpaRepository<Anime, Long> {
 
-    @Query("from Anime a left join fetch a.genres left join fetch a.staff")
-    Set<Anime> getAllEagerly();
-
-    @Query("from Anime a left join fetch a.genres left join fetch a.staff where a.id = :id")
-    Anime getByIdEagerly(@Param("id") Long id);
 }

@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -36,18 +38,20 @@ public class AnimeServiceTest {
     @Test
     public void whenLoadByIdThenReturnEntity() throws AnimeNotFoundException {
         Anime anime = new Anime();
+        Optional<Anime> optionalAnime = Optional.of(anime);
 
-        when(animeRepository.getByIdEagerly(anyLong())).thenReturn(anime);
-        Anime returnedValue = animeService.getAnimeByIdEagerly(1L);
+        when(animeRepository.findById(anyLong())).thenReturn(optionalAnime);
+        Anime returnedValue = animeService.getAnimeById(1L);
 
         assertNotEquals(returnedValue, null);
-        verify(animeRepository, times(1)).getByIdEagerly(anyLong());
+        verify(animeRepository, times(1)).findById(anyLong());
         verify(animeRepository, never()).findAll();
     }
 
     @Test(expected = AnimeNotFoundException.class)
     public void whenLoadByInvalidIdThenThrowException() throws Exception {
-        when(animeRepository.getByIdEagerly(anyLong())).thenReturn(null);
+        Optional<Anime> optionalAnime = Optional.empty();
+        when(animeRepository.findById(anyLong())).thenReturn(optionalAnime);
         animeService.getAnimeById(-1L);
     }
 
@@ -65,4 +69,57 @@ public class AnimeServiceTest {
         assertEquals(anime.getType(), created.getType());
     }
 
+    @Test
+    public void whenUpdatingAnimeThenReturnUpdatedOne() {
+
+        Map<Long, Anime> data = new HashMap<>();
+
+        Anime anime = new Anime();
+        anime.setId(1L);
+        anime.setTitle("Test");
+        anime.setType(AnimeType.TV);
+
+        when(animeRepository.save(any())).then((s) -> {
+            Anime a = s.getArgument(0);
+            Anime tmp = new Anime();
+
+            tmp.setId(a.getId());
+            tmp.setTitle(a.getTitle());
+            tmp.setType(a.getType());
+
+            data.put(a.getId(), tmp);
+            return data.get(a.getId());
+        });
+
+        Anime created = animeService.createNewAnime(anime);
+
+        created.setTitle("Updated");
+
+        animeService.updateAnime(created);
+
+        assertEquals(1, data.size());
+        assertNotEquals(anime.getTitle(), created.getTitle());
+    }
+
+
+    @Test
+    public void testDeleteAnimeById() {
+        animeService.deleteAnimeById(1L);
+
+        verify(animeRepository, times(1)).deleteById(anyLong());
+    }
+
+    @Test
+    public void testGetAllAnimes() {
+        Anime anime = new Anime();
+        ArrayList<Anime> animes = new ArrayList<>();
+        animes.add(anime);
+
+        when(animeRepository.findAll()).thenReturn(animes);
+
+        List<Anime> all = (List<Anime>) animeService.getAll();
+
+        assertEquals(animes.size(), all.size());
+        verify(animeRepository, times(1)).findAll();
+    }
 }
