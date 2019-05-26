@@ -1,5 +1,6 @@
 package com.site.backend.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,5 +41,6 @@ public class Anime {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> staff;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String poster;
 }

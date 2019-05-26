@@ -1,9 +1,7 @@
 package com.site.backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
-import com.site.backend.service.ImageService;
 import com.site.backend.utils.ErrorsCollector;
 import com.site.backend.utils.ResponseError;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
@@ -17,8 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,13 +22,11 @@ import java.util.List;
 public class AnimeController {
 
     private final AnimeService animeService;
-    private final ImageService imageService;
     private final AnimeCreationValidator validator;
 
     @Autowired
-    public AnimeController(AnimeService animeService, ImageService imageService, AnimeCreationValidator validator) {
+    public AnimeController(AnimeService animeService, AnimeCreationValidator validator) {
         this.animeService = animeService;
-        this.imageService = imageService;
         this.validator = validator;
     }
 
@@ -63,20 +57,21 @@ public class AnimeController {
             List<ResponseError> errors = ErrorsCollector.collectErrors(bindingResult);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-        if (poster != null) {
-            try {
-                imageService.addPosterToAnime(anime, poster);
-            } catch (IOException e) {
-                throw new PosterException();
-            }
-        }
-        Anime created = animeService.createNewAnime(anime);
+
+        Anime created = animeService.createNewAnime(anime, poster);
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
     @PutMapping(value = "/update")
-    public void updateAnime(@RequestBody Anime anime) {
-        animeService.updateAnime(anime);
+    public void updateAnime(Anime anime,
+                            BindingResult bindingResult,
+                            @RequestParam(value = "poster", required = false) MultipartFile poster)
+            throws ContentNotAllowedException, PosterException {
+        validator.validate(anime, bindingResult);
+        if (anime == null) {
+            throw new ContentNotAllowedException();
+        }
+        animeService.updateAnime(anime, poster);
     }
 
     @DeleteMapping("/delete/{id}")

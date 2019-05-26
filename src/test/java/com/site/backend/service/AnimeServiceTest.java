@@ -6,6 +6,7 @@ import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
+import com.site.backend.utils.exceptions.PosterException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -28,11 +29,13 @@ public class AnimeServiceTest {
     private GenreRepository genreRepository;
     @Mock
     private SeasonRepository seasonRepository;
+    @Mock
+    private ImageService imageService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository);
+        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository, imageService);
     }
 
     @Test
@@ -56,22 +59,21 @@ public class AnimeServiceTest {
     }
 
     @Test
-    public void whenSavingNewAnimeThenReturnIt() {
+    public void whenSavingNewAnimeThenReturnIt() throws PosterException {
         Anime anime = new Anime();
         anime.setTitle("Test");
         anime.setType(AnimeType.TV);
 
         when(animeRepository.save(anime)).thenReturn(anime);
 
-        Anime created = animeService.createNewAnime(anime);
+        Anime created = animeService.createNewAnime(anime, null);
 
         assertEquals(anime.getTitle(), created.getTitle());
         assertEquals(anime.getType(), created.getType());
     }
 
     @Test
-    public void whenUpdatingAnimeThenReturnUpdatedOne() {
-
+    public void whenUpdatingAnimeThenUpdateOnlyRequestedParameters() throws PosterException, AnimeNotFoundException {
         Map<Long, Anime> data = new HashMap<>();
 
         Anime anime = new Anime();
@@ -90,17 +92,25 @@ public class AnimeServiceTest {
             data.put(a.getId(), tmp);
             return data.get(a.getId());
         });
+        when(animeRepository.findById(anyLong())).then((s) -> {
+            Long id = s.getArgument(0);
+            return Optional.of(data.get(id)) ;
+        });
 
-        Anime created = animeService.createNewAnime(anime);
+        Anime created = animeService.createNewAnime(anime, null);
 
-        created.setTitle("Updated");
+        Anime newOne = new Anime();
+        newOne.setId(created.getId());
+        newOne.setTitle("Updated");
 
-        animeService.updateAnime(created);
+        animeService.updateAnime(newOne, null);
+
+        Anime updated = animeService.getAnimeById(newOne.getId());
 
         assertEquals(1, data.size());
-        assertNotEquals(anime.getTitle(), created.getTitle());
+        assertNotEquals(anime.getTitle(), updated.getTitle());
+        assertEquals(anime.getType(), updated.getType());
     }
-
 
     @Test
     public void testDeleteAnimeById() {

@@ -23,8 +23,6 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ImageServiceTest {
-    @Mock
-    private AnimeService animeService;
 
     private ImageService imageService;
 
@@ -34,29 +32,7 @@ public class ImageServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        imageService = new ImageServiceImpl(animeService);
-    }
-
-    @Test
-    public void saveImageFileSeparately() throws Exception {
-        //given
-        Long id = 1L;
-        MultipartFile file = new MockMultipartFile("poster", "poster.txt", "text/plain", "This is poster".getBytes());
-        Anime anime = new Anime();
-        anime.setId(id);
-
-        when(animeService.getAnimeById(anyLong())).thenReturn(anime);
-
-        ArgumentCaptor<Anime> argumentCaptor = ArgumentCaptor.forClass(Anime.class);
-
-        //when
-        imageService.savePoster(id, file);
-
-        //then
-        verify(animeService, times(1)).updateAnime(argumentCaptor.capture());
-        Anime saved = argumentCaptor.getValue();
-        assertNotNull(saved.getPoster());
-        assertThat(saved.getPoster(), containsString(uploadPath));
+        imageService = new ImageServiceImpl();
     }
 
     @Test

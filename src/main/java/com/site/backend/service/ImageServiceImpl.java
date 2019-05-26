@@ -14,15 +14,8 @@ import java.util.UUID;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private AnimeService animeService;
-
     @Value("${upload.path}")
     private String uploadPath;
-
-    @Autowired
-    public ImageServiceImpl(AnimeService animeService) {
-        this.animeService = animeService;
-    }
 
     @Override
     public void addPosterToAnime(Anime anime, MultipartFile poster) throws IOException {
@@ -37,14 +30,5 @@ public class ImageServiceImpl implements ImageService {
         poster.transferTo(new File(uploadPath + "/" + resultFileName));
 
         anime.setPoster(resultFileName);
-    }
-
-    @Override
-    public void savePoster(Long animeId, MultipartFile poster) throws AnimeNotFoundException, IOException {
-        Anime anime = animeService.getAnimeById(animeId);
-
-        addPosterToAnime(anime, poster);
-
-        animeService.updateAnime(anime);
     }
 }

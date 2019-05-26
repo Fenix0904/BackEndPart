@@ -7,6 +7,7 @@ import com.site.backend.domain.Season;
 import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
+import com.site.backend.utils.exceptions.PosterException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,15 +31,17 @@ public class AnimeServiceIntegrationTest {
     private GenreRepository genreRepository;
     @Mock
     private SeasonRepository seasonRepository;
+    @Mock
+    private ImageService imageService;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository);
+        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository, imageService);
     }
 
     @Test
-    public void updateAnime() {
+    public void updateAnime() throws PosterException {
         AnimeSeason season = new AnimeSeason();
         season.setYear(2019);
         season.setSeason(Season.SPRING);
@@ -55,7 +58,7 @@ public class AnimeServiceIntegrationTest {
         created.setTitle("Updated");
         created.setAnimeSeason(createdSeason);
 
-        Anime updated = animeService.createNewAnime(created);
+        Anime updated = animeService.createNewAnime(created, null);
 
         assertEquals(created.getId(), updated.getId());
         assertEquals("Updated", updated.getTitle());

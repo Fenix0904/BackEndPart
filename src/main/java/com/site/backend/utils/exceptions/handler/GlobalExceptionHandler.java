@@ -12,7 +12,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({AnimeNotFoundException.class, ContentNotAllowedException.class, UserNotFoundException.class, PosterException.class})
-    public ResponseEntity<?> animeNotFoundException(Exception ex) {
+    public ResponseEntity<?> handleException(Exception ex) {
+        // TODO: add logging
         ResponseError error = new ResponseError();
         if (ex instanceof AnimeNotFoundException) {
             error.setErrorMessage("There are no anime with such an id!");

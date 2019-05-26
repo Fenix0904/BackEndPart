@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AnimeControllerTest {
     @Mock
     private AnimeService animeService;
-    @Mock
-    private ImageService imageService;
 
     private Anime anime;
     @Mock
@@ -36,7 +34,7 @@ public class AnimeControllerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        controller = new AnimeController(animeService, imageService, validator);
+        controller = new AnimeController(animeService, validator);
     }
 
     @Test

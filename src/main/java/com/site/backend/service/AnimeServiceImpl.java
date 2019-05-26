@@ -7,10 +7,16 @@ import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
+import com.site.backend.utils.exceptions.PosterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class AnimeServiceImpl implements AnimeService {
@@ -18,17 +24,18 @@ public class AnimeServiceImpl implements AnimeService {
     private final AnimeRepository animeRepository;
     private final GenreRepository genreRepository;
     private final SeasonRepository seasonRepository;
+    private final ImageService imageService;
 
     @Autowired
-    public AnimeServiceImpl(AnimeRepository animeRepository, GenreRepository genreRepository, SeasonRepository seasonRepository) {
+    public AnimeServiceImpl(AnimeRepository animeRepository, GenreRepository genreRepository, SeasonRepository seasonRepository, ImageService imageService) {
         this.animeRepository = animeRepository;
         this.genreRepository = genreRepository;
         this.seasonRepository = seasonRepository;
+        this.imageService = imageService;
     }
 
-    // TODO looks like this method can also perform 'update' logic.
     @Override
-    public Anime createNewAnime(Anime newAnime) {
+    public Anime createNewAnime(Anime newAnime, MultipartFile poster) throws PosterException {
         Set<Genre> attachedGenres = new HashSet<>();
         if (newAnime.getGenres() != null) {
             for (Genre genre : newAnime.getGenres()) {
@@ -44,6 +51,14 @@ public class AnimeServiceImpl implements AnimeService {
             newAnime.setAnimeSeason(null);
         }
 
+        if (poster != null) {
+            try {
+                imageService.addPosterToAnime(newAnime, poster);
+            } catch (IOException e) {
+                throw new PosterException();
+            }
+        }
+
         return animeRepository.save(newAnime);
     }
 
@@ -52,7 +67,6 @@ public class AnimeServiceImpl implements AnimeService {
         return animeRepository.findAll();
     }
 
-
     @Override
     public Anime getAnimeById(Long id) throws AnimeNotFoundException {
         Optional<Anime> anime = animeRepository.findById(id);
@@ -60,8 +74,46 @@ public class AnimeServiceImpl implements AnimeService {
     }
 
     @Override
-    public void updateAnime(Anime newAnime) {
-        animeRepository.save(newAnime);
+    public void updateAnime(Anime newAnime, MultipartFile poster) throws PosterException {
+        Optional<Anime> optional = animeRepository.findById(newAnime.getId());
+        Lock lock = new ReentrantLock(true);
+        // TODO: try to implement try lock and return something if someone is updating anime
+        lock.lock();
+        if (optional.isPresent()) {
+            Anime repoAnime = optional.get();
+            if (!StringUtils.isEmpty(newAnime.getTitle())) {
+                repoAnime.setTitle(newAnime.getTitle());
+            }
+            if (!StringUtils.isEmpty(newAnime.getDescription())) {
+                repoAnime.setDescription(newAnime.getDescription());
+            }
+            if (newAnime.getType() != null) {
+                repoAnime.setType(newAnime.getType());
+            }
+            // TODO: now I assume that received genres has ids. But what if they doesn't?
+            if (newAnime.getGenres() == null) {
+                repoAnime.setGenres(newAnime.getGenres());
+            }
+            if (newAnime.getAnimeSeason() != null) {
+                repoAnime.setAnimeSeason(newAnime.getAnimeSeason());
+            }
+            if (newAnime.getEpisodesCount() != null) {
+                repoAnime.setEpisodesCount(newAnime.getEpisodesCount());
+            }
+            // TODO: same as with genres
+            if (newAnime.getStaff() != null) {
+                repoAnime.setStaff(newAnime.getStaff());
+            }
+            if (poster != null) {
+                try {
+                    imageService.addPosterToAnime(repoAnime, poster);
+                } catch (IOException e) {
+                    throw new PosterException();
+                }
+            }
+            animeRepository.save(repoAnime);
+        }
+        lock.unlock();
     }
 
     @Override
