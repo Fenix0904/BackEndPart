@@ -24,8 +24,8 @@ public class AnimeSeasonController {
 
     @GetMapping("/seasons")
     public Set<AnimeSeason> getAllAvailableSeasons() {
-        List<AnimeSeason> all = seasonRepository.findAll();
-        return all.stream()
+        return seasonRepository.findAll()
+                .stream()
                 .sorted(new AnimeSeasonComparator())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }

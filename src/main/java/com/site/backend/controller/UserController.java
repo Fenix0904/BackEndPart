@@ -71,7 +71,7 @@ public class UserController {
         if (user == null) {
             ResponseError error = new ResponseError();
             error.setErrorMessage("Looks like you have no rights to update this user.");
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(user);
