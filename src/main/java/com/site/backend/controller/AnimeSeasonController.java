@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("animes")
@@ -27,8 +25,8 @@ public class AnimeSeasonController {
     @GetMapping("/seasons")
     public Set<AnimeSeason> getAllAvailableSeasons() {
         List<AnimeSeason> all = seasonRepository.findAll();
-        all.sort(new AnimeSeasonComparator());
-        return new LinkedHashSet<>(all);
+        return all.stream()
+                .sorted(new AnimeSeasonComparator())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
-
 }

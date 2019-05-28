@@ -67,10 +67,10 @@ public class AnimeController {
                             BindingResult bindingResult,
                             @RequestParam(value = "poster", required = false) MultipartFile poster)
             throws ContentNotAllowedException, PosterException {
-        validator.validate(anime, bindingResult);
         if (anime == null) {
             throw new ContentNotAllowedException();
         }
+        validator.validate(anime, bindingResult);
         animeService.updateAnime(anime, poster);
     }
 

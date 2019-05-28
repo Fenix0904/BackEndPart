@@ -91,7 +91,7 @@ public class AnimeServiceImpl implements AnimeService {
                 repoAnime.setType(newAnime.getType());
             }
             // TODO: now I assume that received genres has ids. But what if they doesn't?
-            if (newAnime.getGenres() == null) {
+            if (newAnime.getGenres() != null) {
                 repoAnime.setGenres(newAnime.getGenres());
             }
             if (newAnime.getAnimeSeason() != null) {

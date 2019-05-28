@@ -20,15 +20,15 @@ INSERT INTO genre (id, genre) VALUES (4, 'Fantasy');
 INSERT INTO genre (id, genre) VALUES (5, 'Romance');
 INSERT INTO genre (id, genre) VALUES (6, 'Action');
 
-INSERT INTO anime (id, description, episodes_count, poster, title, type, anime_season_id) VALUES (1, 'Some very loooooooooooong text with anime description. Yeah, it can be quite long.', 24, null, 'Sword Art Online', 0, 1);
-INSERT INTO anime (id, description, episodes_count, poster, title, type, anime_season_id) VALUES (2, 'Some very loooooooooooong text with anime description. Yeah, it can be quite long.', 12, null, 'Konosuba', 2, 2);
+INSERT INTO anime (id, description, episodes_count, poster, title, type, anime_season_id) VALUES (66666, 'Some very loooooooooooong text with anime description. Yeah, it can be quite long.', 24, null, 'Sword Art Online', 0, 1);
+INSERT INTO anime (id, description, episodes_count, poster, title, type, anime_season_id) VALUES (99999, 'Some very loooooooooooong text with anime description. Yeah, it can be quite long.', 12, null, 'Konosuba', 2, 2);
 
-INSERT INTO anime_genre (anime_id, genre_id) VALUES (1, 1);
-INSERT INTO anime_genre (anime_id, genre_id) VALUES (1, 2);
-INSERT INTO anime_genre (anime_id, genre_id) VALUES (1, 3);
-INSERT INTO anime_genre (anime_id, genre_id) VALUES (2, 4);
-INSERT INTO anime_genre (anime_id, genre_id) VALUES (2, 5);
-INSERT INTO anime_genre (anime_id, genre_id) VALUES (2, 6);
+INSERT INTO anime_genre (anime_id, genre_id) VALUES (66666, 1);
+INSERT INTO anime_genre (anime_id, genre_id) VALUES (66666, 2);
+INSERT INTO anime_genre (anime_id, genre_id) VALUES (66666, 3);
+INSERT INTO anime_genre (anime_id, genre_id) VALUES (99999, 4);
+INSERT INTO anime_genre (anime_id, genre_id) VALUES (99999, 5);
+INSERT INTO anime_genre (anime_id, genre_id) VALUES (99999, 6);
 
 
 
