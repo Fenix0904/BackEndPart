@@ -1,9 +1,13 @@
 package com.site.backend.service;
 
-import com.site.backend.domain.*;
+import com.site.backend.domain.Anime;
+import com.site.backend.domain.AnimeSeason;
+import com.site.backend.domain.Genre;
+import com.site.backend.domain.User;
 import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
+import com.site.backend.repository.UserRepository;
 import com.site.backend.utils.AnimeSearchFilter;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.PosterException;
@@ -13,30 +17,38 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class AnimeServiceImpl implements AnimeService {
 
+    private final UserRepository userRepository;
     private final AnimeRepository animeRepository;
     private final GenreRepository genreRepository;
     private final SeasonRepository seasonRepository;
     private final ImageService imageService;
 
     @Autowired
-    public AnimeServiceImpl(AnimeRepository animeRepository, GenreRepository genreRepository, SeasonRepository seasonRepository, ImageService imageService) {
+    public AnimeServiceImpl(AnimeRepository animeRepository,
+                            GenreRepository genreRepository,
+                            SeasonRepository seasonRepository,
+                            ImageService imageService,
+                            UserRepository userRepository) {
         this.animeRepository = animeRepository;
         this.genreRepository = genreRepository;
         this.seasonRepository = seasonRepository;
         this.imageService = imageService;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Anime createNewAnime(Anime newAnime, MultipartFile poster) throws PosterException {
-        Set<Genre> attachedGenres = new HashSet<>();
         if (newAnime.getGenres() != null) {
+            Set<Genre> attachedGenres = new HashSet<>();
             for (Genre genre : newAnime.getGenres()) {
                 Optional<Genre> attached = genreRepository.findById(genre.getId());
                 attached.ifPresent(attachedGenres::add);
@@ -50,6 +62,15 @@ public class AnimeServiceImpl implements AnimeService {
             newAnime.setAnimeSeason(null);
         }
 
+        if (newAnime.getStaff() != null) {
+            Set<User> attachedStaff = new HashSet<>();
+            for (User user : newAnime.getStaff()) {
+                User attached = userRepository.findByUsername(user.getUsername());
+                attachedStaff.add(attached);
+            }
+            newAnime.setStaff(attachedStaff);
+        }
+
         if (poster != null) {
             try {
                 imageService.addPosterToAnime(newAnime, poster);
@@ -59,17 +80,6 @@ public class AnimeServiceImpl implements AnimeService {
         }
 
         return animeRepository.save(newAnime);
-    }
-
-    @Override
-    public Iterable<Anime> getAll() {
-        return animeRepository.findAll();
-    }
-
-    @Override
-    public Anime getAnimeById(Long id) throws AnimeNotFoundException {
-        Optional<Anime> anime = animeRepository.findById(id);
-        return anime.orElseThrow(AnimeNotFoundException::new);
     }
 
     @Override
@@ -127,5 +137,16 @@ public class AnimeServiceImpl implements AnimeService {
             return animeRepository.findAll();
         }
         return animes;
+    }
+
+    @Override
+    public Iterable<Anime> getAll() {
+        return animeRepository.findAll();
+    }
+
+    @Override
+    public Anime getAnimeById(Long id) throws AnimeNotFoundException {
+        Optional<Anime> anime = animeRepository.findById(id);
+        return anime.orElseThrow(AnimeNotFoundException::new);
     }
 }

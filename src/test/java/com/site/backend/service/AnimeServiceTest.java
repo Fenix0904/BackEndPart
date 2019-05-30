@@ -5,6 +5,7 @@ import com.site.backend.domain.AnimeType;
 import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
+import com.site.backend.repository.UserRepository;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.PosterException;
 import org.junit.Before;
@@ -26,6 +27,8 @@ public class AnimeServiceTest {
     @Mock
     private AnimeRepository animeRepository;
     @Mock
+    private UserRepository userRepository;
+    @Mock
     private GenreRepository genreRepository;
     @Mock
     private SeasonRepository seasonRepository;
@@ -35,7 +38,7 @@ public class AnimeServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository, imageService);
+        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository, imageService, userRepository);
     }
 
     @Test

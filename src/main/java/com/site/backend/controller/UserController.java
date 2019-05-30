@@ -50,8 +50,8 @@ public class UserController {
             List<ResponseError> errors = ErrorsCollector.collectErrors(bindingResult);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errors);
         }
-        userService.createUser(user);
-        return new ResponseEntity(HttpStatus.OK);
+        User created = userService.createUser(user);
+        return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
     @GetMapping("/activate/{code}")

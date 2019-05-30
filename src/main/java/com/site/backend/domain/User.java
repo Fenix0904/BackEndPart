@@ -42,6 +42,9 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private Set<Role> roles;
 
+    @Enumerated(EnumType.STRING)
+    private StaffRole staffRole;
+
     @JsonBackReference("staff")
     @ManyToMany(mappedBy = "staff")
     private Set<Anime> animes;

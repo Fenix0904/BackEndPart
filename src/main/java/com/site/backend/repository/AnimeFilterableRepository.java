@@ -5,6 +5,6 @@ import com.site.backend.utils.AnimeSearchFilter;
 
 import java.util.Set;
 
-public interface CustomAnimeRepository {
+public interface AnimeFilterableRepository {
     Set<Anime> getAnimeByFilterParameters(AnimeSearchFilter filter);
 }

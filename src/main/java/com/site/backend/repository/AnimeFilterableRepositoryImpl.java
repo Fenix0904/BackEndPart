@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.Set;
 
 @Repository
-public class CustomAnimeRepositoryImpl implements CustomAnimeRepository {
+public class AnimeFilterableRepositoryImpl implements AnimeFilterableRepository {
 
     private final EntityManager entityManager;
 
     @Autowired
-    public CustomAnimeRepositoryImpl(EntityManager entityManager) {
+    public AnimeFilterableRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
 
@@ -55,7 +55,7 @@ public class CustomAnimeRepositoryImpl implements CustomAnimeRepository {
                 }
                 query.append("(a.type IN (");
                 for (AnimeType animeType : filter.getTypes()) {
-                    query.append(animeType.ordinal()).append(",");
+                    query.append("'").append(animeType).append("',");
                 }
                 query.deleteCharAt(query.length() - 1);
                 query.append(")) ");

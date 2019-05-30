@@ -24,7 +24,7 @@ public class Anime {
     @OneToOne
     private AnimeSeason animeSeason;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private AnimeType type;
 
     private Integer episodesCount;

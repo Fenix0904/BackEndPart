@@ -7,6 +7,7 @@ import com.site.backend.domain.Season;
 import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
+import com.site.backend.repository.UserRepository;
 import com.site.backend.utils.exceptions.PosterException;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,8 @@ public class AnimeServiceIntegrationTest {
     @Autowired
     private AnimeRepository animeRepository;
     @Mock
+    private UserRepository userRepository;
+    @Mock
     private GenreRepository genreRepository;
     @Mock
     private SeasonRepository seasonRepository;
@@ -37,7 +40,7 @@ public class AnimeServiceIntegrationTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository, imageService);
+        animeService = new AnimeServiceImpl(animeRepository, genreRepository, seasonRepository, imageService, userRepository);
     }
 
     @Test

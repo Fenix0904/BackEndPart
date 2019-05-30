@@ -9,13 +9,13 @@ public interface UserService {
 
     User createUser(User user) throws UserAlreadyExistException;
 
-    User getUserById(Long userId) throws UserNotFoundException;
-
     Iterable<User> getAllUsers();
 
-    void deleteUser(Long userId);
+    User getUserById(Long userId) throws UserNotFoundException;
 
     User updateUser(UserDetails currentUser, User updatedUser);
+
+    void deleteUser(Long userId);
 
     boolean activateUser(String code);
 }
