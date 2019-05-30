@@ -1,11 +1,10 @@
 package com.site.backend.service;
 
-import com.site.backend.domain.Anime;
-import com.site.backend.domain.AnimeSeason;
-import com.site.backend.domain.Genre;
+import com.site.backend.domain.*;
 import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
+import com.site.backend.utils.AnimeSearchFilter;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.PosterException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,5 +118,14 @@ public class AnimeServiceImpl implements AnimeService {
     @Override
     public void deleteAnimeById(Long id) {
         animeRepository.deleteById(id);
+    }
+
+    @Override
+    public Iterable<Anime> getAnimesBy(AnimeSearchFilter filter) {
+        Set<Anime> animes = animeRepository.getAnimeByFilterParameters(filter);
+        if (animes == null) {
+            return animeRepository.findAll();
+        }
+        return animes;
     }
 }

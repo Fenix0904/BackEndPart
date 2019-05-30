@@ -1,6 +1,7 @@
 package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
+import com.site.backend.utils.AnimeSearchFilter;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.PosterException;
 import org.springframework.lang.Nullable;
@@ -14,8 +15,9 @@ public interface AnimeService {
 
     Anime getAnimeById(Long id) throws AnimeNotFoundException;
 
+    Iterable<Anime> getAnimesBy(AnimeSearchFilter filter);
+
     void updateAnime(Anime newAnime, @Nullable MultipartFile poster) throws PosterException;
 
     void deleteAnimeById(Long id);
-
 }

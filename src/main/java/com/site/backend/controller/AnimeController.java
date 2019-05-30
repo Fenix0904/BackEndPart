@@ -2,6 +2,7 @@ package com.site.backend.controller;
 
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
+import com.site.backend.utils.AnimeSearchFilter;
 import com.site.backend.utils.ErrorsCollector;
 import com.site.backend.utils.ResponseError;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
@@ -28,20 +29,6 @@ public class AnimeController {
     public AnimeController(AnimeService animeService, AnimeCreationValidator validator) {
         this.animeService = animeService;
         this.validator = validator;
-    }
-
-    @GetMapping("/")
-    public Iterable getAll() {
-        return animeService.getAll();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity getAnimeById(@PathVariable Long id) throws AnimeNotFoundException, ContentNotAllowedException {
-        if (id < 0) {
-            throw new ContentNotAllowedException();
-        }
-        Anime anime = animeService.getAnimeById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(anime);
     }
 
     @PostMapping(value = "/create")
@@ -72,6 +59,26 @@ public class AnimeController {
         }
         validator.validate(anime, bindingResult);
         animeService.updateAnime(anime, poster);
+    }
+
+    @GetMapping("/")
+    public Iterable getAll() {
+        return animeService.getAll();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getAnimeById(@PathVariable Long id) throws AnimeNotFoundException, ContentNotAllowedException {
+        if (id < 0) {
+            throw new ContentNotAllowedException();
+        }
+        Anime anime = animeService.getAnimeById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(anime);
+    }
+
+    @PostMapping("/filter")
+    public ResponseEntity getAnimeBy(@RequestBody AnimeSearchFilter filter) {
+        Iterable<Anime> animes = animeService.getAnimesBy(filter);
+        return ResponseEntity.status(HttpStatus.OK).body(animes);
     }
 
     @DeleteMapping("/delete/{id}")
