@@ -45,8 +45,8 @@ public class AnimeServiceTest {
     public void whenLoadByIdThenReturnEntity() throws AnimeNotFoundException {
         Anime anime = new Anime();
         Optional<Anime> optionalAnime = Optional.of(anime);
-
         when(animeRepository.findById(anyLong())).thenReturn(optionalAnime);
+
         Anime returnedValue = animeService.getAnimeById(1L);
 
         assertNotEquals(returnedValue, null);
@@ -57,6 +57,7 @@ public class AnimeServiceTest {
     @Test(expected = AnimeNotFoundException.class)
     public void whenLoadByInvalidIdThenThrowException() throws Exception {
         Optional<Anime> optionalAnime = Optional.empty();
+
         when(animeRepository.findById(anyLong())).thenReturn(optionalAnime);
         animeService.getAnimeById(-1L);
     }
@@ -117,9 +118,18 @@ public class AnimeServiceTest {
 
     @Test
     public void testDeleteAnimeById() {
+        //given
+        Anime anime = new Anime();
+        anime.setId(1L);
+        Optional<Anime> optionalAnime = Optional.of(anime);
+
+        when(animeRepository.findById(anyLong())).thenReturn(optionalAnime);
+
+        //when
         animeService.deleteAnimeById(1L);
 
-        verify(animeRepository, times(1)).deleteById(anyLong());
+        //then
+        verify(animeRepository, times(1)).delete(any());
     }
 
     @Test
@@ -134,5 +144,10 @@ public class AnimeServiceTest {
 
         assertEquals(animes.size(), all.size());
         verify(animeRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void testAnimeFiltering() {
+        AnimeType type = AnimeType.TV;
     }
 }

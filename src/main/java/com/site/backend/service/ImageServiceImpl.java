@@ -14,8 +14,11 @@ import java.util.UUID;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    @Value("${upload.path}")
     private String uploadPath;
+
+    public ImageServiceImpl(@Value("${upload.path}") String uploadPath) {
+        this.uploadPath = uploadPath;
+    }
 
     @Override
     public void addPosterToAnime(Anime anime, MultipartFile poster) throws IOException {

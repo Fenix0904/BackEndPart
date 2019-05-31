@@ -1,38 +1,34 @@
 package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
+import org.hamcrest.core.StringEndsWith;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
+import org.junit.rules.TemporaryFolder;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import java.io.File;
+import java.io.IOException;
+import java.util.Objects;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
 public class ImageServiceTest {
 
     private ImageService imageService;
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Rule
+    public final TemporaryFolder testRoot = new TemporaryFolder();
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        imageService = new ImageServiceImpl();
+        imageService = new ImageServiceImpl(testRoot.getRoot().getPath());
     }
 
     @Test
@@ -45,7 +41,22 @@ public class ImageServiceTest {
         imageService.addPosterToAnime(anime, file);
 
         //then
-//        assertEquals(file.getBytes().length, anime.getPoster().length);
+        assertNotNull(anime.getPoster());
+        assertThat(anime.getPoster(), StringEndsWith.endsWith(file.getOriginalFilename()));
+    }
+
+    @Test
+    public void deleteFileWithAnimeDeletion() throws IOException {
+        //given
+        MultipartFile file = new MockMultipartFile("poster", "poster.txt", "text/plain", "This is poster".getBytes());
+        Anime anime = new Anime();
+        imageService.addPosterToAnime(anime, file);
+
+        //when
+        imageService.deletePoster(anime);
+
+        //then
+        assertThat(Objects.requireNonNull(new File(testRoot.getRoot().getPath()).list()).length, is(0));
     }
 
 }
