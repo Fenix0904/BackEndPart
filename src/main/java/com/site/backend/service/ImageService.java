@@ -8,4 +8,6 @@ import java.io.IOException;
 
 public interface ImageService {
     void addPosterToAnime(Anime anime, MultipartFile file) throws IOException;
+
+    boolean deletePoster(Anime anime);
 }

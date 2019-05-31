@@ -31,4 +31,10 @@ public class ImageServiceImpl implements ImageService {
 
         anime.setPoster(resultFileName);
     }
+
+    @Override
+    public boolean deletePoster(Anime anime) {
+        File poster = new File(uploadPath + "/" + anime.getPoster());
+        return poster.exists() && poster.delete();
+    }
 }

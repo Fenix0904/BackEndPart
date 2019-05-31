@@ -127,7 +127,11 @@ public class AnimeServiceImpl implements AnimeService {
 
     @Override
     public void deleteAnimeById(Long id) {
-        animeRepository.deleteById(id);
+        Optional<Anime> anime = animeRepository.findById(id);
+        if (anime.isPresent()) {
+            imageService.deletePoster(anime.get());
+            animeRepository.delete(anime.get());
+        }
     }
 
     @Override
