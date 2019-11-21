@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.*;
 import com.site.backend.controller.AnimeController;
 import com.site.backend.repository.GenreRepository;
+import com.site.backend.repository.SeasonRepository;
 import com.site.backend.service.AnimeService;
 import com.site.backend.validator.AnimeCreationValidator;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
@@ -33,9 +34,9 @@ public class AnimeControllerTest {
     @Autowired
     private GenreRepository genreRepository;
     @Autowired
-    private AnimeCreationValidator validator;
+    private SeasonRepository seasonRepository;
     @Autowired
-    private EntityManager entityManager;
+    private AnimeCreationValidator validator;
 
     private AnimeController controller;
 
@@ -56,6 +57,10 @@ public class AnimeControllerTest {
         Genre isekai = new Genre();
         isekai.setId(2L);
         isekai.setGenre("Isekai");
+
+        seasonRepository.save(spring2019);
+        genreRepository.save(comedy);
+        genreRepository.save(isekai);
     }
 
     @Test
