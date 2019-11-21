@@ -54,7 +54,7 @@ public class AnimeServiceImpl implements AnimeService {
                 if (attached.isPresent()) {
                     attachedGenres.add(attached.get());
                 } else {
-                    attachedGenres.add(genre);
+                    attachedGenres.add(genreRepository.save(genre));
                 }
             }
             newAnime.setGenres(attachedGenres);
