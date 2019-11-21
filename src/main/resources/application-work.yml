@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/testanimes"
+    username: "postgres"
+    password: "pass"
+
+upload:
+  path: "/C:/Users/svyatoslav.oprysko/Documents/spring/BackEndPart/uploads"

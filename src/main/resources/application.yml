@@ -1,0 +1,42 @@
+spring:
+  profiles:
+    active: "work"
+
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: "validate"
+    properties:
+      hibernate:
+        generate_statistics: false
+        format_sql: false
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  ## MULTIPART (MultipartProperties)
+  # Enable multipart uploads
+  servlet:
+    multipart:
+      enabled: true
+
+  mail:
+    host: "smtp.gmail.com"
+    username: "springAppTesting@gmail.com"
+    password: "forAppTesting"
+    port: 587
+    protocol: "smtp"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# Define a custom port instead of the default 8080
+server:
+  port: 8442
+
+mail:
+  debug: true
