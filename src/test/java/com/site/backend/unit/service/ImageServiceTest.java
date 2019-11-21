@@ -1,6 +1,8 @@
-package com.site.backend.service;
+package com.site.backend.unit.service;
 
 import com.site.backend.domain.Anime;
+import com.site.backend.service.ImageService;
+import com.site.backend.service.ImageServiceImpl;
 import org.hamcrest.core.StringEndsWith;
 import org.junit.Before;
 import org.junit.Rule;

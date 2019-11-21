@@ -1,9 +1,9 @@
-package com.site.backend.controller;
+package com.site.backend.unit.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.site.backend.controller.AnimeController;
 import com.site.backend.domain.Anime;
 import com.site.backend.service.AnimeService;
-import com.site.backend.service.ImageService;
 import com.site.backend.validator.AnimeCreationValidator;
 import org.junit.Before;
 import org.junit.Test;

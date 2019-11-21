@@ -1,4 +1,4 @@
-package com.site.backend.service;
+package com.site.backend.unit.service;
 
 import com.site.backend.domain.Anime;
 import com.site.backend.domain.AnimeType;
@@ -6,6 +6,9 @@ import com.site.backend.repository.AnimeRepository;
 import com.site.backend.repository.GenreRepository;
 import com.site.backend.repository.SeasonRepository;
 import com.site.backend.repository.UserRepository;
+import com.site.backend.service.AnimeService;
+import com.site.backend.service.AnimeServiceImpl;
+import com.site.backend.service.ImageService;
 import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import com.site.backend.utils.exceptions.PosterException;
 import org.junit.Before;
