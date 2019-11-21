@@ -3,10 +3,12 @@ package com.site.backend.integration.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.site.backend.domain.*;
 import com.site.backend.controller.AnimeController;
+import com.site.backend.repository.GenreRepository;
+import com.site.backend.repository.SeasonRepository;
 import com.site.backend.service.AnimeService;
 import com.site.backend.validator.AnimeCreationValidator;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,26 +18,49 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.persistence.EntityManager;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
-@Ignore
+@SpringBootTest
+@AutoConfigureEmbeddedDatabase
 public class AnimeControllerTest {
     @Autowired
     private AnimeService animeService;
+    @Autowired
+    private GenreRepository genreRepository;
+    @Autowired
+    private SeasonRepository seasonRepository;
     @Autowired
     private AnimeCreationValidator validator;
 
     private AnimeController controller;
 
+
     @Before
     public void setUp() {
         controller = new AnimeController(animeService, validator);
+
+        AnimeSeason spring2019 = new AnimeSeason();
+        spring2019.setSeason(Season.SPRING);
+        spring2019.setYear(2019);
+        spring2019.setId(1L);
+
+        Genre comedy = new Genre();
+        comedy.setId(1L);
+        comedy.setGenre("Comedy");
+
+        Genre isekai = new Genre();
+        isekai.setId(2L);
+        isekai.setGenre("Isekai");
+
+        seasonRepository.save(spring2019);
+        genreRepository.save(comedy);
+        genreRepository.save(isekai);
     }
 
     @Test
@@ -92,6 +117,49 @@ public class AnimeControllerTest {
         Set<Genre> genres = new HashSet<>();
         genres.add(comedy);
         genres.add(isekai);
+
+        Anime swordArtOnline = new Anime();
+        swordArtOnline.setTitle("Integration test");
+        swordArtOnline.setAnimeSeason(spring2019);
+        swordArtOnline.setDescription("This is integration test description");
+        swordArtOnline.setType(AnimeType.TV);
+        swordArtOnline.setEpisodesCount(12);
+        swordArtOnline.setGenres(genres);
+
+
+        MockMvc mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+        mockMvc.perform(
+                post("/animes/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writer().writeValueAsString(swordArtOnline))
+        )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCreateNewAnimeWithAlreadyStoredAndBrandNewProperties() throws Exception {
+        AnimeSeason spring2019 = new AnimeSeason();
+        spring2019.setSeason(Season.SPRING);
+        spring2019.setYear(2019);
+        spring2019.setId(1L);
+
+        Genre comedy = new Genre();
+        comedy.setId(1L);
+        comedy.setGenre("Comedy");
+
+        Genre isekai = new Genre();
+        isekai.setId(2L);
+        isekai.setGenre("Isekai");
+
+        // Brand new one
+        Genre romance = new Genre();
+        romance.setGenre("Romance");
+
+        Set<Genre> genres = new HashSet<>();
+        genres.add(comedy);
+        genres.add(isekai);
+        genres.add(romance);
 
         Anime swordArtOnline = new Anime();
         swordArtOnline.setTitle("Integration test");
