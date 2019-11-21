@@ -1,7 +1,6 @@
 package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
-import com.site.backend.utils.exceptions.AnimeNotFoundException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

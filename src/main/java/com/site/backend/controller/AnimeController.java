@@ -32,7 +32,7 @@ public class AnimeController {
     }
 
     @PostMapping(value = "/create")
-    public ResponseEntity addNewAnime(Anime anime,
+    public ResponseEntity addNewAnime(@RequestBody Anime anime,
                                       BindingResult bindingResult,
                                       @RequestParam(value = "poster", required = false) MultipartFile poster)
             throws ContentNotAllowedException, PosterException {

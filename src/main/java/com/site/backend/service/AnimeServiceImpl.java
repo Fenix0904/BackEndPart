@@ -50,8 +50,12 @@ public class AnimeServiceImpl implements AnimeService {
         if (newAnime.getGenres() != null) {
             Set<Genre> attachedGenres = new HashSet<>();
             for (Genre genre : newAnime.getGenres()) {
-                Optional<Genre> attached = genreRepository.findById(genre.getId());
-                attached.ifPresent(attachedGenres::add);
+                Optional<Genre> attached = genreRepository.findByGenre(genre.getGenre());
+                if (attached.isPresent()) {
+                    attachedGenres.add(attached.get());
+                } else {
+                    attachedGenres.add(genre);
+                }
             }
             newAnime.setGenres(attachedGenres);
         }

@@ -1,8 +1,6 @@
 package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
-import com.site.backend.utils.exceptions.AnimeNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
