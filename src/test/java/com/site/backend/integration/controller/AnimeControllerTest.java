@@ -6,6 +6,7 @@ import com.site.backend.controller.AnimeController;
 import com.site.backend.service.AnimeService;
 import com.site.backend.validator.AnimeCreationValidator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Ignore
 public class AnimeControllerTest {
     @Autowired
     private AnimeService animeService;
@@ -35,7 +37,6 @@ public class AnimeControllerTest {
     public void setUp() {
         controller = new AnimeController(animeService, validator);
     }
-
 
     @Test
     public void testCreateNewAnimeWithBrandNewProperties() throws Exception {
