@@ -2,9 +2,11 @@ package com.site.backend.service;
 
 import com.amazonaws.services.rekognition.AmazonRekognition;
 import com.amazonaws.services.rekognition.model.*;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
+@Profile("amazon-storage")
 public class AwsRekognitionService {
 
     private final AmazonRekognition amazonRekognition;
