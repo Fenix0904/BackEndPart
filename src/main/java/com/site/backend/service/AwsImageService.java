@@ -20,20 +20,23 @@ import java.util.UUID;
 
 @Service
 @Profile("amazon-storage")
-public class AmazonImageService implements ImageService {
+public class AwsImageService implements ImageService {
 
     private String bucketName;
     private String endpointUrl;
+    private final AwsRekognitionService awsRekognitionService;
 
     private final AmazonS3 s3Client;
 
     @Autowired
-    public AmazonImageService(AmazonS3 s3Client,
-                              @Value("${amazonProperties.bucketName}") String bucketName,
-                              @Value("${amazonProperties.endpointUrl}") String endpointUrl) {
+    public AwsImageService(AmazonS3 s3Client,
+                           AwsRekognitionService awsRekognitionService,
+                           @Value("${amazonProperties.bucketName}") String bucketName,
+                           @Value("${amazonProperties.endpointUrl}") String endpointUrl) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.endpointUrl = endpointUrl;
+        this.awsRekognitionService = awsRekognitionService;
     }
 
     @Override
@@ -46,10 +49,12 @@ public class AmazonImageService implements ImageService {
             uploadFileTos3bucket(fileName, file);
             anime.setPoster(fileUrl);
             file.delete();
+            awsRekognitionService.detectModerationLabels(fileUrl);
         } catch (Exception e) {
             e.printStackTrace();
-            if (file != null)
+            if (file != null) {
                 file.delete();
+            }
         }
     }
 
