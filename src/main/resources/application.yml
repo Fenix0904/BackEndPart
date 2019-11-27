@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: "work"
+    active: "work, amazon-storage"
 
   jpa:
     generate-ddl: false
@@ -33,6 +33,13 @@ spring:
           auth: true
           starttls:
             enable: true
+
+amazonProperties:
+  endpointUrl: https://s3.eu-central-1.amazonaws.com
+  region: eu-central-1
+  accessKey: {your key}
+  secretKey: {your key}
+  bucketName: zero-bucket
 
 # Define a custom port instead of the default 8080
 server:

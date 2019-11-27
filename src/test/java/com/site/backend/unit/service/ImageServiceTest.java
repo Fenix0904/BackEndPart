@@ -40,7 +40,7 @@ public class ImageServiceTest {
         Anime anime = new Anime();
 
         //when
-        imageService.addPosterToAnime(anime, file);
+        imageService.uploadPoster(anime, file);
 
         //then
         assertNotNull(anime.getPoster());
@@ -52,7 +52,7 @@ public class ImageServiceTest {
         //given
         MultipartFile file = new MockMultipartFile("poster", "poster.txt", "text/plain", "This is poster".getBytes());
         Anime anime = new Anime();
-        imageService.addPosterToAnime(anime, file);
+        imageService.uploadPoster(anime, file);
 
         //when
         imageService.deletePoster(anime);

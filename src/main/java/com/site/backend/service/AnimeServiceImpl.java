@@ -54,7 +54,8 @@ public class AnimeServiceImpl implements AnimeService {
                 if (attached.isPresent()) {
                     attachedGenres.add(attached.get());
                 } else {
-                    attachedGenres.add(genre);
+                    Genre attachedGenre = genreRepository.save(genre);
+                    attachedGenres.add(attachedGenre);
                 }
             }
             newAnime.setGenres(attachedGenres);
@@ -77,7 +78,7 @@ public class AnimeServiceImpl implements AnimeService {
 
         if (poster != null) {
             try {
-                imageService.addPosterToAnime(newAnime, poster);
+                imageService.uploadPoster(newAnime, poster);
             } catch (IOException e) {
                 throw new PosterException();
             }
@@ -119,7 +120,7 @@ public class AnimeServiceImpl implements AnimeService {
             }
             if (poster != null) {
                 try {
-                    imageService.addPosterToAnime(repoAnime, poster);
+                    imageService.uploadPoster(repoAnime, poster);
                 } catch (IOException e) {
                     throw new PosterException();
                 }
@@ -131,10 +132,13 @@ public class AnimeServiceImpl implements AnimeService {
 
     @Override
     public void deleteAnimeById(Long id) {
-        Optional<Anime> anime = animeRepository.findById(id);
-        if (anime.isPresent()) {
-            imageService.deletePoster(anime.get());
-            animeRepository.delete(anime.get());
+        Optional<Anime> animeOpt = animeRepository.findById(id);
+        if (animeOpt.isPresent()) {
+            Anime anime = animeOpt.get();
+            if (anime.getPoster() != null) {
+                imageService.deletePoster(anime);
+            }
+            animeRepository.delete(anime);
         }
     }
 

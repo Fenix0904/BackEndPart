@@ -37,7 +37,6 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity getUserById(@PathVariable Long id) throws UserNotFoundException {
         User user = userService.getUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);

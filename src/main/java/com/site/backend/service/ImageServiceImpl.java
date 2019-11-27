@@ -2,6 +2,7 @@ package com.site.backend.service;
 
 import com.site.backend.domain.Anime;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.util.UUID;
 
 @Service
+@Profile("local-storage")
 public class ImageServiceImpl implements ImageService {
 
     private String uploadPath;
@@ -19,7 +21,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void addPosterToAnime(Anime anime, MultipartFile poster) throws IOException {
+    public void uploadPoster(Anime anime, MultipartFile poster) throws IOException {
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
             uploadDir.mkdir();
