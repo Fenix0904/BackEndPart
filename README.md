@@ -1,3 +1,1 @@
-TODO
-=====
- * Implement Genre service to create new genre if that was added while creating new anime.
+[![CircleCI](https://circleci.com/gh/Fenix0904/BackEndPart.svg?style=svg)](https://circleci.com/gh/Fenix0904/BackEndPart)
