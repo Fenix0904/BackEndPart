@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureEmbeddedDatabase
+@ActiveProfiles({"local-storage", "work"})
 public class AnimeControllerTest {
     @Autowired
     private AnimeService animeService;
@@ -289,6 +291,7 @@ public class AnimeControllerTest {
         String createdJSON = new ObjectMapper().writeValueAsString(created);
         mockMvc.perform(
                 put("/animes/update/")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(createdJSON)
         );
 
@@ -297,14 +300,10 @@ public class AnimeControllerTest {
         assertTrue(updated.isPresent());
 
         assertEquals(created.getGenres().size(), updated.get().getGenres().size());
+        assertEquals(created.getTitle(), updated.get().getTitle());
+        assertEquals(created.getEpisodesCount(), updated.get().getEpisodesCount());
         for (Genre genre : updated.get().getGenres()) {
             assertNotNull(genre.getId());
         }
-
-        String updatedJSON = new ObjectMapper().writeValueAsString(updated.get());
-        assertEquals(createdJSON, updatedJSON);
-        System.out.println(createdJSON);
-        System.out.println("NEXT");
-        System.out.println(updatedJSON);
     }
 }

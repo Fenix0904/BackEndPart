@@ -52,7 +52,7 @@ public class AnimeController {
     @PutMapping(value = "/update")
     public void updateAnime(@RequestBody Anime anime,
                             BindingResult bindingResult,
-                            @RequestParam(value = "poster", required = false) MultipartFile poster)
+                            @RequestPart(value = "poster", required = false) MultipartFile poster)
             throws ContentNotAllowedException, PosterException {
         if (anime == null) {
             throw new ContentNotAllowedException();

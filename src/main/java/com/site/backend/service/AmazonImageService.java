@@ -20,7 +20,6 @@ import java.util.UUID;
 
 @Service
 @Profile("amazon-storage")
-@Primary
 public class AmazonImageService implements ImageService {
 
     private String bucketName;

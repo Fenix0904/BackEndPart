@@ -48,16 +48,7 @@ public class AnimeServiceImpl implements AnimeService {
     @Override
     public Anime createNewAnime(Anime newAnime, MultipartFile poster) throws PosterException {
         if (newAnime.getGenres() != null) {
-            Set<Genre> attachedGenres = new HashSet<>();
-            for (Genre genre : newAnime.getGenres()) {
-                Optional<Genre> attached = genreRepository.findByGenre(genre.getGenre());
-                if (attached.isPresent()) {
-                    attachedGenres.add(attached.get());
-                } else {
-                    attachedGenres.add(genreRepository.save(genre));
-                }
-            }
-            newAnime.setGenres(attachedGenres);
+            newAnime.setGenres(addGenres(newAnime.getGenres()));
         }
         if (newAnime.getAnimeSeason() != null && newAnime.getAnimeSeason().getId() != null) {
             Optional<AnimeSeason> attachedSeason = seasonRepository.findById(newAnime.getAnimeSeason().getId());
@@ -103,9 +94,8 @@ public class AnimeServiceImpl implements AnimeService {
             if (newAnime.getType() != null) {
                 repoAnime.setType(newAnime.getType());
             }
-            // TODO: now I assume that received genres has ids. But what if they doesn't?
             if (newAnime.getGenres() != null) {
-                repoAnime.setGenres(newAnime.getGenres());
+                repoAnime.setGenres(addGenres(newAnime.getGenres()));
             }
             if (newAnime.getAnimeSeason() != null) {
                 repoAnime.setAnimeSeason(newAnime.getAnimeSeason());
@@ -159,5 +149,18 @@ public class AnimeServiceImpl implements AnimeService {
     public Anime getAnimeById(Long id) throws AnimeNotFoundException {
         Optional<Anime> anime = animeRepository.findById(id);
         return anime.orElseThrow(AnimeNotFoundException::new);
+    }
+
+    private Set<Genre> addGenres(Set<Genre> genres) {
+        Set<Genre> attachedGenres = new HashSet<>();
+        for (Genre genre : genres) {
+            Optional<Genre> attached = genreRepository.findByGenre(genre.getGenre());
+            if (attached.isPresent()) {
+                attachedGenres.add(attached.get());
+            } else {
+                attachedGenres.add(genreRepository.save(genre));
+            }
+        }
+        return attachedGenres;
     }
 }
