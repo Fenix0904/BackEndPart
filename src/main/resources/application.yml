@@ -37,8 +37,8 @@ spring:
 amazonProperties:
   endpointUrl: https://s3.eu-central-1.amazonaws.com
   region: eu-central-1
-  accessKey: ${your key}
-  secretKey: ${your key}
+  accessKey: ${AMAZON_ACCESS_KEY}
+  secretKey: ${AMAZON_SECRET_KEY}
   bucketName: zero-bucket
 
 # Define a custom port instead of the default 8080
