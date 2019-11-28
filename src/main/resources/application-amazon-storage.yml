@@ -4,3 +4,11 @@ amazonProperties:
   accessKey: ${AMAZON_ACCESS_KEY}
   secretKey: ${AMAZON_SECRET_KEY}
   bucketName: zero-bucket
+
+
+spring:
+  datasource:
+    url: "jdbc:postgresql://demo-animes.ceiojlhjp8er.eu-central-1.rds.amazonaws.com:5432/animes"
+    username: ${DB_USERNAME}
+    password: ${AMAZON_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver

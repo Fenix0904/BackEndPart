@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: "jdbc:postgresql://localhost:5432/testanimes"
-    username: "postgres"
-    password: "pass"
+    username: ${DB_USERNAME}
+    password: ${HOME_DB_PASSWORD}
 
 upload:
   path: "todo"

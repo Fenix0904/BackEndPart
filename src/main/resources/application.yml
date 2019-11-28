@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: "work, amazon-storage"
+    active: "amazon-storage"
 
   jpa:
     generate-ddl: false
