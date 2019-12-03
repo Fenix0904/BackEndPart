@@ -7,7 +7,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.site.backend.domain.Anime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,18 +24,20 @@ public class AwsImageService implements ImageService {
     private String bucketName;
     private String endpointUrl;
     private final AwsRekognitionService awsRekognitionService;
-
     private final AmazonS3 s3Client;
+    private final SnsNotificationSender sender;
 
     @Autowired
     public AwsImageService(AmazonS3 s3Client,
                            AwsRekognitionService awsRekognitionService,
+                           SnsNotificationSender sender,
                            @Value("${amazonProperties.bucketName}") String bucketName,
                            @Value("${amazonProperties.endpointUrl}") String endpointUrl) {
         this.s3Client = s3Client;
         this.bucketName = bucketName;
         this.endpointUrl = endpointUrl;
         this.awsRekognitionService = awsRekognitionService;
+        this.sender = sender;
     }
 
     @Override
@@ -47,6 +48,7 @@ public class AwsImageService implements ImageService {
             String fileName = generateFileName(multipartFile);
             String fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
+            sender.send("Upload", "Upload was successful");
             anime.setPoster(fileUrl);
             file.delete();
             awsRekognitionService.detectModerationLabels(fileUrl);
