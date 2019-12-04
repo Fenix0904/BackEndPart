@@ -48,10 +48,9 @@ public class AwsImageService implements ImageService {
             String fileName = generateFileName(multipartFile);
             String fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
-            sender.send("Upload", "Upload was successful");
             anime.setPoster(fileUrl);
             file.delete();
-            awsRekognitionService.detectModerationLabels(fileUrl);
+            sender.send("Upload", anime);
         } catch (Exception e) {
             e.printStackTrace();
             if (file != null) {
